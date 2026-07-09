@@ -1,0 +1,234 @@
+// ==========================================================
+// Quest Database Schema
+// Modern Support Ticket Management Platform
+//
+// Canonical source of truth for the database schema.
+// Any schema changes should be reflected here before
+// implementing Prisma migrations.
+// ==========================================================
+
+Enum ticket_status {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+  CANCELLED
+}
+
+Enum ticket_priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+Enum activity_action {
+  CREATED
+  UPDATED
+  DELETED
+  COMMENT_ADDED
+}
+
+// --------------------------------------------------
+// Users
+// --------------------------------------------------
+
+Table users {
+  id uuid [pk]
+
+  name varchar(100) [not null]
+  email varchar(255) [not null, unique]
+  password_hash text [not null]
+
+  role_id int [not null]
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Note: "Application users."
+}
+
+// --------------------------------------------------
+// Roles
+// --------------------------------------------------
+
+Table roles {
+  id int [pk]
+
+  name varchar(50) [
+    not null,
+    unique,
+    note: "Display name (e.g. Member, Manager)"
+  ]
+
+  description text
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Note: "System roles."
+}
+
+// --------------------------------------------------
+// Permissions
+// --------------------------------------------------
+
+Table permissions {
+  id int [pk]
+
+  key varchar(100) [
+    not null,
+    unique,
+    note: "Backend permission key (e.g. DELETE_TICKET)"
+  ]
+
+  name varchar(100) [
+    not null,
+    note: "Frontend display name (e.g. Delete Ticket)"
+  ]
+
+  description text
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Note: "Available system permissions."
+}
+
+// --------------------------------------------------
+// Role Permissions (RBAC)
+// --------------------------------------------------
+
+Table role_permissions {
+  role_id int [not null]
+  permission_id int [not null]
+
+  indexes {
+    (role_id, permission_id) [pk]
+  }
+
+  Note: "Many-to-many mapping between Roles and Permissions."
+}
+
+// --------------------------------------------------
+// Sessions
+// --------------------------------------------------
+
+Table sessions {
+  id uuid [pk]
+
+  user_id uuid [not null]
+
+  hashed_refresh_token text [
+    not null,
+    unique,
+    note: "Hashed refresh token for this login session."
+  ]
+
+  expires_at timestamp [not null]
+  revoked_at timestamp
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Note: "Active authenticated sessions."
+}
+
+// --------------------------------------------------
+// Tickets
+// --------------------------------------------------
+
+Table tickets {
+  id uuid [pk]
+
+  ticket_number varchar(20) [
+    not null,
+    unique,
+    note: "Human-readable identifier (e.g. QST-001)"
+  ]
+
+  title varchar(255) [not null]
+  description text
+
+  status ticket_status [
+    not null,
+    default: 'OPEN'
+  ]
+
+  priority ticket_priority [
+    not null,
+    default: 'MEDIUM'
+  ]
+
+  reporter_id uuid [not null]
+  assignee_id uuid [not null]
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Note: "Support tickets."
+}
+
+// --------------------------------------------------
+// Comments
+// --------------------------------------------------
+
+Table comments {
+  id uuid [pk]
+
+  ticket_id uuid [not null]
+  author_id uuid [not null]
+
+  message text [not null]
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Note: "Comments made on tickets."
+}
+
+// --------------------------------------------------
+// Activities
+// --------------------------------------------------
+
+Table activities {
+  id uuid [pk]
+
+  ticket_id uuid [not null]
+
+  action activity_action [not null]
+
+  field_name varchar(50) [
+    note: "Updated field (status, priority, assignee, title, description, etc.)"
+  ]
+
+  previous_value text
+  new_value text
+
+  performed_by uuid [not null]
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Note: "Audit log for ticket lifecycle events."
+}
+
+// --------------------------------------------------
+// Relationships
+// --------------------------------------------------
+
+Ref: users.role_id > roles.id
+
+Ref: role_permissions.role_id > roles.id
+Ref: role_permissions.permission_id > permissions.id
+
+Ref: sessions.user_id > users.id
+
+Ref: tickets.reporter_id > users.id
+Ref: tickets.assignee_id > users.id
+
+Ref: comments.ticket_id > tickets.id
+Ref: comments.author_id > users.id
+
+Ref: activities.ticket_id > tickets.id
+Ref: activities.performed_by > users.id

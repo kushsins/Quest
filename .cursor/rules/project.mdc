@@ -1,0 +1,94 @@
+---
+description: Global project rules for Quest
+alwaysApply: true
+---
+
+# Quest Development Rules
+
+## Source of Truth
+
+Before implementing any feature, consult the project documentation.
+
+The following documents define the project requirements and must be followed in order of precedence:
+
+1. Product Requirements (`docs/01-product-requirements.md`)
+2. UI/UX Specification (`docs/02-ui-ux-specification.md`)
+3. Design References (`docs/design-reference.md`)
+4. System Architecture (`docs/03-system-architecture.md`)
+5. Database Design (`docs/04-database-design.md`)
+6. API Specification (`docs/05-api-specification.md`)
+7. Project Plan (`docs/06-project-plan.md`)
+8. Testing Strategy (`docs/07-testing-strategy.md`)
+
+If documentation conflicts occur, stop and ask for clarification instead of making assumptions.
+
+---
+
+# Development Rules
+
+- Never implement features that are not documented.
+- Follow the API contract exactly.
+- Follow the database schema exactly.
+- Follow the documented folder structure.
+- Keep business logic out of controllers.
+- Keep components reusable and modular.
+- Prefer composition over duplication.
+- Use strict TypeScript.
+- Write readable and maintainable code.
+- Avoid unnecessary complexity and over-engineering.
+
+---
+
+# UI Rules
+
+- Match the provided UI references as closely as possible.
+- Follow the documented glassmorphism design language.
+- Support Light, Dark and System themes.
+- Use responsive layouts.
+- Reuse components whenever possible.
+
+---
+
+# Backend Rules
+
+- Use Prisma for database access.
+- Return standardized API responses.
+- Handle errors using the global error middleware.
+- Validate all incoming requests.
+- Never expose sensitive information in API responses.
+
+---
+
+# Workflow
+
+Implement one milestone at a time.
+
+For every feature:
+
+1. Read the relevant documentation.
+2. Implement the backend.
+3. Verify the backend.
+4. Implement the frontend.
+5. Integrate the feature.
+6. Verify the feature.
+7. Move to the next milestone.
+
+Do not begin the next milestone until the current one is complete.
+
+---
+
+# Architecture Changes
+
+Do not modify:
+
+- API contracts
+- Database schema
+- Folder structure
+- Authentication flow
+- Response format
+
+unless explicitly instructed.
+
+When a change affects the architecture, explain the impact before implementing it.---
+alwaysApply: true
+---
