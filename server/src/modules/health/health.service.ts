@@ -1,5 +1,6 @@
 import { prisma } from "../../config/database.js";
 import { ApiError } from "../../shared/errors/ApiError.js";
+import { logger } from "../../shared/utils/logger.js";
 
 export interface HealthStatus {
   status: "ok";
@@ -17,7 +18,7 @@ export async function getHealthStatus(): Promise<HealthStatus> {
       timestamp: new Date().toISOString(),
     };
   } catch (error) {
-    console.error("Database health check failed:", error);
+    logger.error("Database health check failed", error);
 
     throw new ApiError(
       503,

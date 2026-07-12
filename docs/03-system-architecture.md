@@ -297,7 +297,7 @@ Application logging is abstracted behind a logging layer.
 
 This allows the implementation to evolve without affecting business logic.
 
-Initial development uses console logging.
+Initial development uses console logging via `server/src/shared/utils/logger.ts`.
 
 Production logging can later be replaced by a dedicated logging solution without requiring widespread code changes.
 

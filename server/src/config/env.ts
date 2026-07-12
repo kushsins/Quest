@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { logger } from "../shared/utils/logger.js";
+
 const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(3000),
   NODE_ENV: z
@@ -15,7 +17,10 @@ function loadEnv(): Env {
   const result = envSchema.safeParse(process.env);
 
   if (!result.success) {
-    console.error("Invalid environment configuration:", result.error.flatten().fieldErrors);
+    logger.error(
+      "Invalid environment configuration",
+      result.error.flatten().fieldErrors,
+    );
     throw new Error("Invalid environment configuration.");
   }
 

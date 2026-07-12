@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 
 import { ApiError } from "../shared/errors/ApiError.js";
+import { logger } from "../shared/utils/logger.js";
 
 export function errorMiddleware(
   error: unknown,
@@ -18,7 +19,7 @@ export function errorMiddleware(
     return;
   }
 
-  console.error(error);
+  logger.error("Unhandled error", error);
 
   response.status(500).json({
     success: false,

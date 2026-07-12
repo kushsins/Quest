@@ -8,6 +8,7 @@ import {
   notFoundMiddleware,
 } from "./middleware/error.middleware.js";
 import { healthRouter } from "./modules/health/health.routes.js";
+import { logger } from "./shared/utils/logger.js";
 
 export function createApp() {
   const app = express();
@@ -21,7 +22,7 @@ export function createApp() {
   app.use(express.json());
 
   app.use((request, _response, next) => {
-    console.log(`${request.method} ${request.path}`);
+    logger.info(`${request.method} ${request.path}`);
     next();
   });
 

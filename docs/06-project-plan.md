@@ -45,6 +45,8 @@ Benefits of this approach include:
 
 # 3. Milestone 1 — Foundation
 
+**Status:** Complete
+
 ## Backend
 
 - Repository setup
@@ -87,6 +89,8 @@ Benefits of this approach include:
 ---
 
 # 4. Milestone 2 — Authentication & Authorization
+
+**Status:** Not started
 
 ## Backend
 

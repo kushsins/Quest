@@ -3,15 +3,16 @@ import "dotenv/config";
 import { createApp } from "./app.js";
 import { disconnectDatabase } from "./config/database.js";
 import { env } from "./config/env.js";
+import { logger } from "./shared/utils/logger.js";
 
 const app = createApp();
 
 const server = app.listen(env.PORT, () => {
-  console.log(`Quest API listening on port ${String(env.PORT)}`);
+  logger.info(`Quest API listening on port ${String(env.PORT)}`);
 });
 
 function shutdown(signal: string): void {
-  console.log(`${signal} received. Shutting down gracefully.`);
+  logger.info(`${signal} received. Shutting down gracefully.`);
 
   server.close(() => {
     void disconnectDatabase().finally(() => {

@@ -98,6 +98,23 @@ If time permits, automated unit and integration tests may be added using Jest.
 
 ---
 
+## Milestone 1 — Foundation
+
+Milestone 1 was verified manually before commit. No automated test suite is required at this stage.
+
+Verified items:
+
+- Docker PostgreSQL starts and reports healthy
+- Backend starts and connects to the database
+- `GET /api/v1/health` returns the documented success response
+- Frontend dev server starts and loads the application shell
+- Home route (`/`) displays backend connectivity status
+- Theme switching works for Light, Dark, and System modes
+- Responsive layouts behave correctly on mobile, tablet, and desktop
+- Sidebar collapse state persists across sessions
+
+---
+
 # 5. Manual Test Checklist
 
 ## Authentication
