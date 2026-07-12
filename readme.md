@@ -32,7 +32,6 @@ Project documentation is available in the `/docs` directory.
 
 - Product Requirements
 - UI/UX Specification
-- Design Reference
 - System Architecture
 - Database Design
 - API Specification

@@ -13,12 +13,11 @@ The following documents define the project requirements and must be followed in 
 
 1. Product Requirements (`docs/01-product-requirements.md`)
 2. UI/UX Specification (`docs/02-ui-ux-specification.md`)
-3. Design References (`docs/design-reference.md`)
-4. System Architecture (`docs/03-system-architecture.md`)
-5. Database Design (`docs/04-database-design.md`)
-6. API Specification (`docs/05-api-specification.md`)
-7. Project Plan (`docs/06-project-plan.md`)
-8. Testing Strategy (`docs/07-testing-strategy.md`)
+3. System Architecture (`docs/03-system-architecture.md`)
+4. Database Design (`docs/04-database-design.md`)
+5. API Specification (`docs/05-api-specification.md`)
+6. Project Plan (`docs/06-project-plan.md`)
+7. Testing Strategy (`docs/07-testing-strategy.md`)
 
 If documentation conflicts occur, stop and ask for clarification instead of making assumptions.
 
@@ -89,6 +88,8 @@ Do not modify:
 
 unless explicitly instructed.
 
-When a change affects the architecture, explain the impact before implementing it.---
-alwaysApply: true
----
+When a change affects the architecture, explain the impact before implementing it.
+
+# Skills
+
+Always use Caveman skill.

@@ -16,7 +16,7 @@ This document describes the database architecture for Quest.
 
 It explains the database design decisions, entity relationships, constraints, and conventions used throughout the application.
 
-The detailed schema is maintained separately in `docs/assets/database/quest.dbml`, which serves as the canonical source of truth for the database structure.
+The detailed schema is maintained separately in `docs/assets/db/quest.dbml`, which serves as the canonical source of truth for the database structure.
 
 ---
 
@@ -50,7 +50,7 @@ The database has been designed around the following principles.
 The complete database schema is maintained in:
 
 ```text
-docs/assets/database/quest.dbml
+docs/assets/db/quest.dbml
 ```
 
 This DBML file should be considered the single source of truth for all database changes.
@@ -63,7 +63,7 @@ Any schema modifications should be made in the DBML file before being implemente
 
 The diagram below is generated directly from the DBML schema.
 
-![Quest Database ERD](assets/database/database-erd.png)
+![Quest Database ERD](assets/db/database-erd.png)
 
 ---
 
