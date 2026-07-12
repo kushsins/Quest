@@ -1,0 +1,161 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+  CANCELLED
+
+  @@map("ticket_status")
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+
+  @@map("ticket_priority")
+}
+
+enum ActivityAction {
+  CREATED
+  UPDATED
+  DELETED
+  COMMENT_ADDED
+
+  @@map("activity_action")
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String   @db.VarChar(100)
+  email        String   @unique @db.VarChar(255)
+  passwordHash String   @map("password_hash")
+  roleId       Int      @map("role_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  role                Role       @relation(fields: [roleId], references: [id])
+  sessions            Session[]
+  reportedTickets     Ticket[]   @relation("TicketReporter")
+  assignedTickets     Ticket[]   @relation("TicketAssignee")
+  comments            Comment[]
+  performedActivities Activity[]
+
+  @@map("users")
+}
+
+model Role {
+  id          Int      @id
+  name        String   @unique @db.VarChar(50)
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  users           User[]
+  rolePermissions RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          Int      @id
+  key         String   @unique @db.VarChar(100)
+  name        String   @db.VarChar(100)
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  rolePermissions RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       Int @map("role_id")
+  permissionId Int @map("permission_id")
+
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model Session {
+  id                 String    @id @default(uuid()) @db.Uuid
+  userId             String    @map("user_id") @db.Uuid
+  hashedRefreshToken String    @unique @map("hashed_refresh_token")
+  expiresAt          DateTime  @map("expires_at")
+  revokedAt          DateTime? @map("revoked_at")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("sessions")
+}
+
+model Ticket {
+  id           String         @id @default(uuid()) @db.Uuid
+  ticketNumber String         @unique @map("ticket_number") @db.VarChar(20)
+  title        String         @db.VarChar(255)
+  description  String?
+  status       TicketStatus   @default(OPEN)
+  priority     TicketPriority @default(MEDIUM)
+  reporterId   String         @map("reporter_id") @db.Uuid
+  assigneeId   String         @map("assignee_id") @db.Uuid
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+
+  reporter   User       @relation("TicketReporter", fields: [reporterId], references: [id])
+  assignee   User       @relation("TicketAssignee", fields: [assigneeId], references: [id])
+  comments   Comment[]
+  activities Activity[]
+
+  @@index([status])
+  @@index([priority])
+  @@index([reporterId])
+  @@index([assigneeId])
+  @@map("tickets")
+}
+
+model Comment {
+  id        String   @id @default(uuid()) @db.Uuid
+  ticketId  String   @map("ticket_id") @db.Uuid
+  authorId  String   @map("author_id") @db.Uuid
+  message   String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  ticket Ticket @relation(fields: [ticketId], references: [id])
+  author User   @relation(fields: [authorId], references: [id])
+
+  @@map("comments")
+}
+
+model Activity {
+  id            String         @id @default(uuid()) @db.Uuid
+  ticketId      String         @map("ticket_id") @db.Uuid
+  action        ActivityAction
+  fieldName     String?        @map("field_name") @db.VarChar(50)
+  previousValue String?        @map("previous_value")
+  newValue      String?        @map("new_value")
+  performedBy   String         @map("performed_by") @db.Uuid
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+
+  ticket    Ticket @relation(fields: [ticketId], references: [id])
+  performer User   @relation(fields: [performedBy], references: [id])
+
+  @@map("activities")
+}

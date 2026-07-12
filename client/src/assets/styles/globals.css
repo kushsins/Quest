@@ -1,0 +1,664 @@
+@import "tailwindcss";
+
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ─── Layout tokens ─── */
+:root {
+  --sidebar-width-expanded: 15rem;
+  --sidebar-width-collapsed: 3.5rem;
+  --layout-gap: 0.5rem;
+  --layout-padding: 0.5rem;
+  --panel-radius: 1rem;
+  --control-radius: 0.625rem;
+  --pill-radius: 0.625rem;
+
+  /* ─── Color tokens (light) ─── */
+  --background: oklch(0.955 0.018 285);
+  --foreground: oklch(0.18 0.03 285);
+  --card: oklch(1 0 0 / 18%);
+  --card-foreground: oklch(0.18 0.03 285);
+  --popover: oklch(1 0 0 / 80%);
+  --popover-foreground: oklch(0.18 0.03 285);
+  --primary: oklch(0.54 0.24 292);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.97 0.012 290 / 60%);
+  --secondary-foreground: oklch(0.3 0.04 285);
+  --muted: oklch(0.96 0.01 288 / 55%);
+  --muted-foreground: oklch(0.48 0.025 285);
+  --accent: oklch(0.97 0.015 292 / 65%);
+  --accent-foreground: oklch(0.3 0.06 292);
+  --destructive: oklch(0.58 0.22 25);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(0.18 0.03 285 / 10%);
+  --input: oklch(1 0 0 / 55%);
+  --ring: oklch(0.54 0.22 292 / 50%);
+  --radius: 0.75rem;
+
+  /* Sidebar */
+  --sidebar-bg: oklch(1 0 0 / 22%);
+  --sidebar-foreground: oklch(0.3 0.03 285);
+  --sidebar-border: oklch(1 0 0 / 52%);
+  --sidebar-accent: oklch(0.54 0.24 292);
+  --sidebar-accent-foreground: oklch(0.99 0 0);
+  --sidebar-muted: oklch(0.5 0.02 285);
+
+  /* ─── Glass tokens ─── */
+  /*
+   * Light glass — very faint frost so blobs read through (not solid white)
+   */
+  --glass-blur: 32px;
+  --glass-blur-strong: 48px;
+  --glass-saturate: 200%;
+  --glass-noise-opacity: 0.028;
+  --glass-gradient-start: oklch(1 0 0 / 9%);
+  --glass-gradient-end: oklch(1 0 0 / 4%);
+  --glass-surface: linear-gradient(
+    135deg,
+    var(--glass-gradient-start),
+    var(--glass-gradient-end)
+  );
+  --glass-surface-elevated: linear-gradient(
+    135deg,
+    oklch(1 0 0 / 11%),
+    oklch(1 0 0 / 6%)
+  );
+  --glass-surface-subtle: linear-gradient(
+    135deg,
+    oklch(1 0 0 / 8%),
+    oklch(1 0 0 / 4%)
+  );
+  --glass-border: oklch(0.97 0.025 268 / 40%);
+  --glass-border-subtle: oklch(0.98 0.02 270 / 26%);
+  --glass-inset-highlight:
+    inset 0 1px 0 0 oklch(1 0 0 / 42%),
+    inset 0 0 28px oklch(1 0 0 / 3%);
+  --glass-border-glow:
+    0 0 0 1px oklch(1 0 0 / 20%),
+    0 0 14px oklch(0.88 0.07 262 / 24%),
+    0 0 38px oklch(0.6 0.15 278 / 14%);
+  --glass-border-glow-elevated:
+    0 0 0 1px oklch(1 0 0 / 26%),
+    0 0 18px oklch(0.9 0.08 258 / 30%),
+    0 0 46px oklch(0.56 0.18 282 / 18%),
+    0 0 76px oklch(0.54 0.14 292 / 10%);
+  --glass-border-glow-subtle:
+    0 0 0 1px oklch(1 0 0 / 14%),
+    0 0 10px oklch(0.86 0.06 265 / 16%),
+    0 0 24px oklch(0.58 0.12 275 / 9%);
+  --glass-rim-gradient: linear-gradient(
+    145deg,
+    oklch(1 0 0 / 52%) 0%,
+    oklch(0.93 0.06 262 / 32%) 30%,
+    oklch(0.72 0.14 275 / 16%) 62%,
+    oklch(0.58 0.14 288 / 8%) 100%
+  );
+  --glass-shadow:
+    0 4px 16px oklch(0.45 0.06 265 / 6%),
+    0 12px 40px oklch(0.5 0.08 280 / 5%);
+  --glass-shadow-elevated:
+    0 8px 28px oklch(0.42 0.08 255 / 8%),
+    0 20px 56px oklch(0.48 0.1 285 / 7%),
+    0 40px 80px oklch(0.5 0.08 280 / 4%);
+
+  /* ─── Glow ─── */
+  --glow-primary: oklch(0.54 0.24 292 / 45%);
+  --glow-primary-soft: oklch(0.58 0.22 292 / 18%);
+  --glow-button: 0 4px 20px oklch(0.54 0.24 292 / 38%);
+
+  /* Active nav: glass tint + glowing purple border */
+  --nav-active-bg: oklch(0.54 0.24 292 / 7%);
+  --nav-active-border: oklch(0.54 0.24 292 / 48%);
+  --nav-active-shadow:
+    inset 0 1px 0 0 oklch(1 0 0 / 22%),
+    0 0 0 1px oklch(0.54 0.24 292 / 12%),
+    0 4px 20px oklch(0.54 0.24 292 / 18%),
+    0 8px 36px oklch(0.54 0.22 292 / 10%);
+  --nav-active-color: oklch(0.44 0.28 292);
+
+  /* ─── Background blob tokens ─── */
+  /*
+   * Dual-color blends instead of single-color radials.
+   * Each blob transitions between two nearby hues, so they feel like
+   * soft atmospheric light sources — think iOS Control Center / WWDC bg.
+   */
+
+  /* Motion */
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 220ms;
+  --duration-slow: 320ms;
+}
+
+.dark {
+  --background: oklch(0.09 0.022 280);
+  --foreground: oklch(0.95 0.012 285);
+  --card: oklch(0.1 0.02 285 / 40%);
+  --card-foreground: oklch(0.95 0.012 285);
+  --popover: oklch(0.12 0.025 280 / 88%);
+  --popover-foreground: oklch(0.95 0.012 285);
+  --primary: oklch(0.62 0.22 292);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.18 0.025 280 / 60%);
+  --secondary-foreground: oklch(0.9 0.018 285);
+  --muted: oklch(0.16 0.022 280 / 55%);
+  --muted-foreground: oklch(0.62 0.025 285);
+  --accent: oklch(0.2 0.035 292 / 60%);
+  --accent-foreground: oklch(0.92 0.018 290);
+  --destructive: oklch(0.62 0.22 25);
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(1 0 0 / 8%);
+  --ring: oklch(0.62 0.22 292 / 45%);
+
+  --sidebar-bg: oklch(0.12 0.028 280 / 52%);
+  --sidebar-foreground: oklch(0.88 0.018 285);
+  --sidebar-border: oklch(1 0 0 / 9%);
+  --sidebar-muted: oklch(0.58 0.02 285);
+
+  /*
+   * Hierarchy (dark): deep navy → vivid orbs → translucent frosted panels
+   */
+  --glass-blur: 24px;
+  --glass-blur-strong: 36px;
+  --glass-saturate: 185%;
+  --glass-noise-opacity: 0.07;
+  --glass-gradient-start: oklch(1 0 0 / 12%);
+  --glass-gradient-end: oklch(0.08 0.02 285 / 5%);
+  --glass-surface: linear-gradient(
+    135deg,
+    var(--glass-gradient-start),
+    var(--glass-gradient-end)
+  );
+  --glass-surface-elevated: linear-gradient(
+    135deg,
+    oklch(1 0 0 / 16%),
+    oklch(0.06 0.02 285 / 7%)
+  );
+  --glass-surface-subtle: linear-gradient(
+    135deg,
+    oklch(1 0 0 / 11%),
+    oklch(0.05 0.015 285 / 4%)
+  );
+  --glass-border: oklch(0.93 0.035 265 / 28%);
+  --glass-border-subtle: oklch(0.9 0.028 268 / 18%);
+  --glass-inset-highlight:
+    inset 0 1px 0 0 oklch(1 0 0 / 18%),
+    inset 0 0 28px oklch(0.5 0.1 280 / 2%);
+  --glass-border-glow:
+    0 0 0 1px oklch(1 0 0 / 8%),
+    0 0 12px oklch(0.78 0.08 262 / 18%),
+    0 0 28px oklch(0.52 0.16 275 / 10%);
+  --glass-border-glow-elevated:
+    0 0 0 1px oklch(1 0 0 / 10%),
+    0 0 14px oklch(0.8 0.09 258 / 22%),
+    0 0 34px oklch(0.5 0.18 278 / 12%);
+  --glass-border-glow-subtle:
+    0 0 0 1px oklch(1 0 0 / 6%),
+    0 0 10px oklch(0.74 0.07 265 / 16%),
+    0 0 22px oklch(0.5 0.14 280 / 9%);
+  --glass-rim-gradient: linear-gradient(
+    145deg,
+    oklch(1 0 0 / 26%) 0%,
+    oklch(0.88 0.07 258 / 22%) 28%,
+    oklch(0.62 0.16 275 / 14%) 58%,
+    oklch(0.48 0.16 292 / 8%) 100%
+  );
+  --glass-shadow:
+    0 2px 4px oklch(0 0 0 / 14%),
+    0 8px 24px oklch(0 0 0 / 22%),
+    0 24px 48px oklch(0.4 0.14 292 / 8%);
+  --glass-shadow-elevated:
+    0 4px 8px oklch(0 0 0 / 18%),
+    0 12px 32px oklch(0 0 0 / 28%),
+    0 32px 64px oklch(0.4 0.14 292 / 10%);
+
+  --glow-primary: oklch(0.62 0.32 295 / 55%);
+  --glow-primary-soft: oklch(0.58 0.3 320 / 28%);
+  --glow-button: 0 4px 28px oklch(0.58 0.32 295 / 55%);
+
+  --nav-active-bg: oklch(0.62 0.22 292 / 13%);
+  --nav-active-border: oklch(0.62 0.22 292 / 58%);
+  --nav-active-shadow:
+    inset 0 1px 0 0 oklch(1 0 0 / 10%),
+    0 0 0 1px oklch(0.62 0.22 292 / 18%),
+    0 4px 24px oklch(0.55 0.24 292 / 28%),
+    0 8px 40px oklch(0.55 0.22 292 / 16%);
+  --nav-active-color: oklch(0.78 0.16 292);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar-bg);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: var(--radius);
+  --radius-lg: var(--panel-radius);
+  --radius-xl: calc(var(--panel-radius) + 4px);
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply antialiased;
+    color-scheme: light;
+    transition:
+      background-color var(--duration-normal) var(--ease-smooth),
+      color var(--duration-normal) var(--ease-smooth);
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply font-sans text-foreground;
+    background-color: var(--background);
+  }
+}
+
+/* ────────────────────────────────────────────────────────────
+   Ambient background — scattered blurred color spheres
+   ────────────────────────────────────────────────────────────
+   Base layer is a solid indigo-tinted surface.
+   Fifteen small dual-tone radial blobs are positioned across
+   the viewport (not anchored to corners). Heavy blur on each
+   blob causes colours to mix where they overlap — indigo, blue,
+   purple, pink, yellow, green — giving a mesh-gradient feel.
+   ──────────────────────────────────────────────────────────── */
+@layer utilities {
+  .quest-background {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+    background: oklch(0.955 0.018 285);
+    transition: background var(--duration-slow) var(--ease-smooth);
+  }
+
+  html.dark .quest-background {
+    background: oklch(0.09 0.022 280);
+  }
+
+  /* Container for all blob spheres */
+  .quest-blobs {
+    position: absolute;
+    inset: 0;
+    transition: opacity var(--duration-slow) var(--ease-smooth);
+  }
+
+  .quest-blobs--light {
+    opacity: 1;
+    filter: saturate(1.5);
+  }
+
+  .quest-blobs--dark {
+    opacity: 0;
+  }
+
+  html.dark .quest-blobs--light {
+    opacity: 0;
+  }
+
+  html.dark .quest-blobs--dark {
+    opacity: 1;
+  }
+
+  /* Individual colour sphere */
+  .quest-blob-anchor {
+    position: absolute;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  .quest-blob {
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  /* ─── Glass surfaces ─── */
+
+  /*
+   * Shared frosted-glass recipe:
+   * gradient fill + backdrop blur/saturate + noise grain + specular border
+   */
+  .glass-surface,
+  .glass-elevated,
+  .glass-subtle,
+  .glass-floating,
+  .glass-panel,
+  .glass-panel-strong {
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  /* In-flow glass panels need a positioning context for ::before/::after */
+  .glass-surface:not(.fixed),
+  .glass-elevated:not(.fixed),
+  .glass-subtle:not(.fixed),
+  .glass-floating:not(.fixed),
+  .glass-panel:not(.fixed),
+  .glass-panel-strong:not(.fixed) {
+    position: relative;
+  }
+
+  .glass-surface::after,
+  .glass-elevated::after,
+  .glass-subtle::after,
+  .glass-floating::after,
+  .glass-panel::after,
+  .glass-panel-strong::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 2;
+    opacity: var(--glass-noise-opacity);
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
+  }
+
+  .glass-surface::before,
+  .glass-elevated::before,
+  .glass-floating::before,
+  .glass-panel::before,
+  .glass-panel-strong::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 1;
+    padding: 1px;
+    background: var(--glass-rim-gradient);
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+  }
+
+  /* Base surface — outermost layer, least opaque */
+  .glass-surface {
+    background: var(--glass-surface);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-border-glow), var(--glass-shadow), var(--glass-inset-highlight);
+  }
+
+  /* Elevated — main floating panels (sidebar, content area) */
+  .glass-elevated {
+    background: var(--glass-surface-elevated);
+    backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border);
+    box-shadow:
+      var(--glass-border-glow-elevated),
+      var(--glass-shadow-elevated),
+      var(--glass-inset-highlight);
+  }
+
+  /* Subtle — innermost nested elements (user card, theme row) */
+  .glass-subtle {
+    background: var(--glass-surface-subtle);
+    backdrop-filter: blur(20px) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(20px) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border-subtle);
+    box-shadow: var(--glass-border-glow-subtle), var(--glass-inset-highlight);
+  }
+
+  /* Floating panel — used for sidebar and main content area */
+  .glass-floating {
+    background: var(--glass-surface-elevated);
+    backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border);
+    box-shadow:
+      var(--glass-border-glow-elevated),
+      var(--glass-shadow-elevated),
+      var(--glass-inset-highlight);
+    border-radius: var(--panel-radius);
+    overflow: clip;
+  }
+
+  /* Scroll inside glass shell so backdrop + fill clip to rounded corners */
+  .glass-floating-scroll {
+    height: 100%;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  /* Legacy aliases */
+  .glass-panel {
+    background: var(--glass-surface);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-border-glow), var(--glass-shadow), var(--glass-inset-highlight);
+    border-radius: var(--panel-radius);
+  }
+
+  .glass-panel-strong {
+    background: var(--glass-surface-elevated);
+    backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur-strong)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border);
+    box-shadow:
+      var(--glass-border-glow-elevated),
+      var(--glass-shadow-elevated),
+      var(--glass-inset-highlight);
+    border-radius: var(--panel-radius);
+  }
+
+  /* ─── Sidebar floating collapse button ─── */
+  /*
+   * Circular toggle anchored at the right edge of the sidebar.
+   * Position is absolute relative to the sidebar <aside> which
+   * is position: relative. right: -12px centres the 24px button
+   * on the sidebar edge. top value is fixed so it never moves
+   * between expanded and collapsed states.
+   */
+  .sidebar-collapse-btn {
+    position: absolute;
+    right: -12px;
+    top: 5.25rem;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 9999px;
+    background: var(--glass-surface-elevated);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-border-glow), var(--glass-shadow), var(--glass-inset-highlight);
+    color: var(--sidebar-muted);
+    cursor: pointer;
+    transition:
+      color var(--duration-fast) var(--ease-smooth),
+      box-shadow var(--duration-fast) var(--ease-smooth);
+  }
+
+  .sidebar-collapse-btn:hover {
+    color: var(--foreground);
+    box-shadow:
+      var(--glass-border-glow-elevated),
+      var(--glass-shadow-elevated),
+      var(--glass-inset-highlight);
+  }
+
+  .sidebar-collapse-btn:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  /* Only the icon rotates — the button stays put */
+  .sidebar-collapse-icon {
+    transition: transform var(--duration-slow) var(--ease-smooth);
+  }
+
+  .sidebar-collapse-icon--flipped {
+    transform: rotate(180deg);
+  }
+
+  /* ─── Navigation states ─── */
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    border-radius: var(--pill-radius);
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    color: var(--sidebar-foreground);
+    border: 1px solid transparent;
+    transition:
+      background-color var(--duration-fast) var(--ease-smooth),
+      color var(--duration-fast) var(--ease-smooth),
+      border-color var(--duration-fast) var(--ease-smooth),
+      box-shadow var(--duration-fast) var(--ease-smooth);
+  }
+
+  .nav-item:hover:not(.nav-item-active) {
+    background: var(--glass-surface-subtle);
+  }
+
+  .nav-item:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  /*
+   * Active nav: translucent glass tint + glowing purple border + inner highlight.
+   * NOT a solid fill — the sidebar glass surface shows through.
+   */
+  .nav-item-active {
+    background: var(--nav-active-bg);
+    border-color: var(--nav-active-border);
+    color: var(--nav-active-color);
+    box-shadow: var(--nav-active-shadow);
+  }
+
+  /* ─── Glow utilities ─── */
+  .glow-primary {
+    box-shadow: var(--glow-button);
+  }
+
+  .glow-primary-soft {
+    box-shadow: 0 0 32px var(--glow-primary-soft);
+  }
+
+  /* ─── Button gradient ─── */
+  .btn-primary-gradient {
+    background: linear-gradient(135deg, oklch(0.58 0.24 292), oklch(0.5 0.22 285));
+    color: var(--primary-foreground);
+    box-shadow: var(--glow-button);
+    transition:
+      filter var(--duration-fast) var(--ease-smooth),
+      box-shadow var(--duration-fast) var(--ease-smooth),
+      transform var(--duration-fast) var(--ease-smooth);
+  }
+
+  .btn-primary-gradient:hover {
+    filter: brightness(1.08);
+    box-shadow: var(--glow-button), 0 0 48px var(--glow-primary-soft);
+  }
+
+  .btn-primary-gradient:active {
+    transform: scale(0.98);
+  }
+
+  /* ─── Layout ─── */
+  .layout-padding {
+    padding: var(--layout-padding);
+  }
+
+  .layout-gap {
+    gap: var(--layout-gap);
+  }
+
+  /* ─── Transitions ─── */
+  .sidebar-transition {
+    transition: width var(--duration-slow) var(--ease-smooth);
+  }
+
+  .overlay-transition {
+    transition: opacity var(--duration-normal) var(--ease-smooth);
+  }
+
+  .drawer-transition {
+    transition: transform var(--duration-slow) var(--ease-smooth);
+  }
+
+  /* ─── Typography scale ─── */
+  .text-page-title {
+    font-size: 1.625rem;
+    font-weight: 700;
+    line-height: 2rem;
+    letter-spacing: -0.025em;
+  }
+
+  .text-page-description {
+    font-size: 0.8125rem;
+    line-height: 1.5rem;
+    color: var(--muted-foreground);
+  }
+
+  .text-section-title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .quest-blob-anchor {
+      animation: none !important;
+    }
+
+    .sidebar-transition,
+    .overlay-transition,
+    .drawer-transition,
+    .sidebar-collapse-icon,
+    .nav-item,
+    .btn-primary-gradient,
+    html {
+      transition: none !important;
+    }
+  }
+}

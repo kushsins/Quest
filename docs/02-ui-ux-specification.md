@@ -510,16 +510,11 @@ The final implementation should match the reference as closely as possible while
 
 ## Light Theme
 
-![Quest Dark Theme](./assets/ui/login-light.png)
+![Quest Light Theme](./assets/ui/login-light.png)
 
 ## Dark Theme
 
-![Quest Light Theme](./assets/ui/login-dark.png)
-
-
-The provided login screen designs are the implementation target for Quest's authentication page.
-
-The final implementation should match the reference as closely as possible while remaining responsive and maintainable. The goal is to recreate the overall experience rather than reinterpret it.
+![Quest Dark Theme](./assets/ui/login-dark.png)
 
 ## Design Goals
 

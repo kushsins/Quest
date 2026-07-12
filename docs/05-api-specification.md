@@ -309,6 +309,7 @@ Quest follows standard HTTP status codes.
 | 409 | Resource conflict |
 | 422 | Validation failed |
 | 500 | Internal server error |
+| 503 | Service unavailable (e.g. database disconnected) |
 
 ---
 
@@ -408,6 +409,7 @@ Supported values are documented for each endpoint.
 
 Quest currently exposes the following API groups.
 
+- Health
 - Authentication
 - Dashboard
 - Users
@@ -418,7 +420,77 @@ Each group is described in the following sections.
 
 ---
 
-# 14. Authentication Endpoints
+# 14. Health Endpoints
+
+Health endpoints verify application and infrastructure availability.
+
+They are used during development, deployment health checks, and monitoring.
+
+---
+
+## Get Health
+
+Returns the current health status of the API and its database connection.
+
+### Endpoint
+
+```http
+GET /api/v1/health
+```
+
+### Authentication
+
+Not Required
+
+### Success Response
+
+**Status Code**
+
+```
+200 OK
+```
+
+```json
+{
+    "success": true,
+    "message": "Service is healthy.",
+    "data": {
+        "status": "ok",
+        "database": true,
+        "timestamp": "2026-07-10T12:00:00.000Z"
+    }
+}
+```
+
+### Response Fields
+
+| Field | Description |
+|-------|-------------|
+| `status` | Overall service status (`ok` when the API is running) |
+| `database` | Database connectivity status (`true` when connected, `false` when disconnected) |
+| `timestamp` | ISO 8601 timestamp of the health check |
+
+### Error Responses
+
+**Status Code**
+
+```
+503 Service Unavailable
+```
+
+Returned when the database connection cannot be established.
+
+```json
+{
+    "success": false,
+    "message": "Service is temporarily unavailable.",
+    "errors": []
+}
+```
+
+---
+
+# 15. Authentication Endpoints
 
 Authentication endpoints are responsible for user authentication and session management.
 
@@ -628,7 +700,7 @@ Bearer Token
 
 ---
 
-# 15. Dashboard Endpoints
+# 16. Dashboard Endpoints
 
 Dashboard endpoints provide summarized application statistics.
 
@@ -679,7 +751,7 @@ VIEW_DASHBOARD
 
 ---
 
-# 16. User Endpoints
+# 17. User Endpoints
 
 The initial release exposes read-only user information.
 
@@ -746,7 +818,7 @@ VIEW_USERS
 
 ---
 
-# 17. Ticket Endpoints
+# 18. Ticket Endpoints
 
 Ticket endpoints manage the complete lifecycle of support tickets.
 
@@ -996,7 +1068,7 @@ DELETE_TICKET
 
 ---
 
-# 18. Comment Endpoints
+# 19. Comment Endpoints
 
 Comments belong to Tickets and cannot exist independently.
 
@@ -1106,7 +1178,7 @@ ADD_COMMENT
 
 ---
 
-# 19. Permission Matrix
+# 20. Permission Matrix
 
 The following permissions are used throughout Version 1 of Quest.
 
@@ -1131,7 +1203,7 @@ If the authenticated user lacks the required permission, the API responds with:
 
 ---
 
-# 20. API Versioning
+# 21. API Versioning
 
 Quest follows URL-based API versioning.
 
@@ -1151,7 +1223,15 @@ Example
 
 ---
 
-# 21. Endpoint Summary
+# 22. Endpoint Summary
+
+## Health
+
+| Method | Endpoint |
+|----------|----------|
+| GET | /api/v1/health |
+
+---
 
 ## Authentication
 
@@ -1201,7 +1281,7 @@ Example
 
 ---
 
-# 22. Future Endpoints
+# 23. Future Endpoints
 
 The following endpoints are intentionally excluded from Version 1 and will be introduced as future enhancements.
 
@@ -1267,7 +1347,7 @@ GET /notifications
 
 ---
 
-# 23. OpenAPI / Swagger
+# 24. OpenAPI / Swagger
 
 Once the backend implementation is complete, the REST API will be documented using OpenAPI (Swagger).
 
@@ -1286,7 +1366,7 @@ Swagger should be generated directly from the backend implementation to ensure i
 
 ---
 
-# 24. Implementation Notes
+# 25. Implementation Notes
 
 The following conventions should be followed throughout the backend implementation.
 
@@ -1304,7 +1384,7 @@ The following conventions should be followed throughout the backend implementati
 
 ---
 
-# 25. Summary
+# 26. Summary
 
 This document defines the complete API contract for Version 1 of Quest.
 
