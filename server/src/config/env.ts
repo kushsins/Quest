@@ -16,7 +16,7 @@ const envSchema = z.object({
   REFRESH_TOKEN_EXPIRES_IN: z.string().regex(/^\d+[smhd]$/),
 });
 
-export type Env = z.infer<typeof envSchema>;
+type Env = z.infer<typeof envSchema>;
 
 function loadEnv(): Env {
   const result = envSchema.safeParse(process.env);

@@ -2,7 +2,7 @@ import { prisma } from "../../config/database.js";
 import { ApiError } from "../../shared/errors/ApiError.js";
 import { logger } from "../../shared/utils/logger.js";
 
-export interface HealthStatus {
+interface HealthStatus {
   status: "ok";
   database: boolean;
   timestamp: string;

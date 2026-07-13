@@ -3,7 +3,7 @@ import jwt, { type JwtPayload } from "jsonwebtoken";
 import { env } from "../../config/env.js";
 import { parseDurationToSeconds } from "./duration.util.js";
 
-export interface AccessTokenPayload {
+interface AccessTokenPayload {
   sub: string;
   sid: string;
 }

@@ -128,7 +128,7 @@ Backend authentication was verified manually before frontend implementation. Ver
 - Refresh token rotation invalidates the previous refresh token immediately
 - Logout revokes only the current session and clears the refresh token cookie
 - Multiple device sessions remain active when one session is logged out
-- Role and permission middleware enforce authorization by permission key
+- `requirePermission` middleware implemented and ready for M3 route protection
 
 Seed users for testing:
 
@@ -136,6 +136,25 @@ Seed users for testing:
 |-------|----------|------|
 | `manager@quest.com` | `password123` | Manager |
 | `member@quest.com` | `password123` | Member |
+
+---
+
+## Milestone 2 — Authentication & Authorization (Frontend)
+
+Frontend authentication was verified manually after implementation. Verified items:
+
+- Login page matches Quest glassmorphism design system
+- Access token stored in memory only (not in browser storage)
+- Silent authentication on application load via refresh cookie
+- Auth splash shown during initialization (no login page flash)
+- Protected routes (`/`, `/dashboard`, `/tickets`) require authentication
+- Unauthenticated access redirects to `/login` with return path preserved
+- Successful login returns user to originally requested route
+- Automatic token refresh on `401` with single refresh request and queued retries
+- Refresh failure clears state, query cache, and redirects to login
+- Logout clears session, access token, query cache, and redirects to login
+- Sidebar displays authenticated user name, role, and avatar initials
+- Theme persistence works across login and authenticated sessions
 
 ---
 

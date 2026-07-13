@@ -1,6 +1,6 @@
 import type { PermissionKey } from "../../shared/constants/permissions.js";
 
-export interface AuthRole {
+interface AuthRole {
   id: number;
   name: string;
 }

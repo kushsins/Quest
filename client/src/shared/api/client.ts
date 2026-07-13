@@ -1,7 +1,8 @@
 import axios, { type AxiosError } from "axios";
 
-import { ApiClientError } from "@/shared/api/types";
-import type { ApiErrorResponse } from "@/shared/api/types";
+import { ApiClientError, type ApiErrorResponse } from "@/shared/api/types";
+import { notifySessionExpired } from "@/shared/auth/authSession";
+import { setupAuthInterceptors } from "@/shared/api/setupAuthInterceptors";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -36,3 +37,7 @@ apiClient.interceptors.response.use(
     );
   },
 );
+
+setupAuthInterceptors(apiClient, {
+  onSessionExpired: notifySessionExpired,
+});

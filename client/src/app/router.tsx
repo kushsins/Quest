@@ -1,45 +1,78 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import { AppLayout } from "@/shared/components/layout/AppLayout";
+import { LoginLayout } from "@/features/auth/components/LoginLayout";
+import { LoginPage } from "@/features/auth/components/LoginPage";
+import { AuthProvider } from "@/features/auth/context/AuthProvider";
 import { HealthStatus } from "@/features/health/components/HealthStatus";
+import { AuthGate } from "@/shared/components/auth/AuthGate";
+import { GuestRoute } from "@/shared/components/auth/GuestRoute";
+import { ProtectedRoute } from "@/shared/components/auth/ProtectedRoute";
+import { AppLayout } from "@/shared/components/layout/AppLayout";
 import { SidebarProvider } from "@/shared/hooks/useSidebar";
 import { NotFoundPage } from "@/shared/pages/NotFoundPage";
 import { PlaceholderPage } from "@/shared/pages/PlaceholderPage";
 
 export const router = createBrowserRouter([
   {
-    path: "/",
     element: (
-      <SidebarProvider>
-        <AppLayout />
-      </SidebarProvider>
+      <AuthProvider>
+        <AuthGate />
+      </AuthProvider>
     ),
     children: [
       {
-        index: true,
-        element: <HealthStatus />,
+        element: <GuestRoute />,
+        children: [
+          {
+            element: <LoginLayout />,
+            children: [
+              {
+                path: "/login",
+                element: <LoginPage />,
+              },
+            ],
+          },
+        ],
       },
       {
-        path: "dashboard",
-        element: (
-          <PlaceholderPage
-            title="Dashboard"
-            description="Overview statistics and recent activity will appear here."
-          />
-        ),
-      },
-      {
-        path: "tickets",
-        element: (
-          <PlaceholderPage
-            title="Tickets"
-            description="Ticket workspace will appear here."
-          />
-        ),
-      },
-      {
-        path: "*",
-        element: <NotFoundPage />,
+        element: <ProtectedRoute />,
+        children: [
+          {
+            element: (
+              <SidebarProvider>
+                <AppLayout />
+              </SidebarProvider>
+            ),
+            children: [
+              {
+                index: true,
+                element: <HealthStatus />,
+              },
+              {
+                path: "dashboard",
+                element: (
+                  <PlaceholderPage
+                    title="Dashboard"
+                    description="Overview statistics and recent activity will appear here."
+                  />
+                ),
+              },
+              {
+                path: "tickets",
+                element: (
+                  <PlaceholderPage
+                    title="Tickets"
+                    description="Ticket workspace will appear here."
+                  />
+                ),
+              },
+              {
+                path: "*",
+                element: <NotFoundPage />,
+              },
+            ],
+          },
+        ],
       },
     ],
   },

@@ -646,6 +646,533 @@
     letter-spacing: -0.01em;
   }
 
+  /* ─── Login screen (matches docs/assets/ui/login-light|dark.png) ─── */
+
+  .login-page-frame {
+    width: 100%;
+    min-height: 100dvh;
+    max-height: 100dvh;
+    overflow-y: auto;
+    padding: 1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .login-page-frame {
+      padding: 2rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .login-page-frame {
+      padding: 2.5rem 3.5rem;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .login-page-frame {
+      padding: 3rem 5rem;
+    }
+  }
+
+  /*
+   * Outer frosted glass card.
+   * Light: bright white glass — right panel appears white because this background shows.
+   * Dark:  dark navy glass  — right panel appears dark because this background shows.
+   * Inner panels (left dark) have their own border-radius = visibly "inset" inside the card.
+   */
+  .login-shell {
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    max-width: 120rem;
+    min-height: min(44rem, calc(100dvh - 2.5rem));
+    /* 10px inner padding: creates visible gap around left dark panel */
+    padding: 0.625rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 1.75rem;
+    /* Light: bright semi-transparent white glass — makes right side appear clean white */
+    border: 1px solid oklch(1 0 0 / 55%);
+    background: oklch(1 0 0 / 50%);
+    backdrop-filter: blur(40px) saturate(160%);
+    -webkit-backdrop-filter: blur(40px) saturate(160%);
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 75%),
+      inset 0 0 0 1px oklch(1 0 0 / 20%),
+      0 2px 6px oklch(0.6 0.08 292 / 8%),
+      0 20px 50px oklch(0.5 0.1 285 / 12%),
+      0 40px 80px oklch(0.55 0.08 290 / 8%);
+  }
+
+  .dark .login-shell {
+    /* Dark: deep navy glass */
+    border-color: oklch(1 0 0 / 9%);
+    background: oklch(0.1 0.05 290 / 25%);
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 9%),
+      inset 0 0 0 1px oklch(1 0 0 / 4%),
+      0 0 0 1px oklch(0.6 0.12 292 / 6%),
+      0 20px 55px oklch(0 0 0 / 55%),
+      0 48px 100px oklch(0.15 0.06 292 / 22%);
+  }
+
+  @media (min-width: 1024px) {
+    .login-shell {
+      min-height: min(44rem, calc(100dvh - 5rem));
+      max-height: min(54rem, calc(100dvh - 5rem));
+      height: min(54rem, calc(100dvh - 5rem));
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .login-shell {
+      min-height: min(44rem, calc(100dvh - 6rem));
+      max-height: min(54rem, calc(100dvh - 6rem));
+      height: min(54rem, calc(100dvh - 6rem));
+    }
+  }
+
+  /*
+   * Inner grid sits within the 10px shell padding.
+   * gap: 0.625rem adds gap BETWEEN the two inner panels.
+   * Left panel has border-radius: 1.125rem (= 28px outer - 10px gap = 18px)
+   * so its corners are visible against the outer glass background.
+   */
+  .login-shell-inner {
+    flex: 1;
+    display: grid;
+    min-height: 0;
+    border-radius: 1.125rem;
+    overflow: hidden;
+  }
+
+  @media (min-width: 1024px) {
+    .login-shell-inner {
+      grid-template-columns: 53fr 47fr;
+    }
+  }
+
+  /* Left branding panel — theme-specific cosmic artwork */
+  .login-branding-panel {
+    position: relative;
+    isolation: isolate;
+    display: none;
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 1.125rem;
+    border: 1px solid oklch(1 0 0 / 15%);
+    box-shadow: inset 0 1px 0 0 oklch(1 0 0 / 15%);
+    background: oklch(0.5 0.18 290);
+  }
+
+  @media (min-width: 1024px) {
+    .login-branding-panel {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  .login-branding-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .login-branding-backdrop::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to right,
+      oklch(0.42 0.16 290 / 42%) 0%,
+      oklch(0.45 0.14 290 / 18%) 38%,
+      transparent 72%
+    );
+    pointer-events: none;
+  }
+
+  .dark .login-branding-backdrop::after {
+    background: linear-gradient(
+      to right,
+      oklch(0.12 0.06 285 / 35%) 0%,
+      oklch(0.14 0.05 285 / 12%) 42%,
+      transparent 70%
+    );
+  }
+
+  .login-branding-backdrop-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .login-branding-backdrop-image--light {
+    display: block;
+  }
+
+  .login-branding-backdrop-image--dark {
+    display: none;
+  }
+
+  .dark .login-branding-backdrop-image--light {
+    display: none;
+  }
+
+  .dark .login-branding-backdrop-image--dark {
+    display: block;
+  }
+
+  .login-branding-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 2rem;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-gutter: stable;
+    padding: 2.5rem 2.25rem;
+  }
+
+  @media (min-width: 1280px) {
+    .login-branding-content {
+      padding: 3rem 2.75rem;
+    }
+  }
+
+  .login-branding-content > * {
+    width: 75%;
+    max-width: 75%;
+    flex-shrink: 0;
+  }
+
+  .login-branding-content::-webkit-scrollbar {
+    width: 0.375rem;
+  }
+
+  .login-branding-content::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: oklch(1 0 0 / 22%);
+  }
+
+  .login-branding-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .login-branding-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.875rem;
+    flex: 0 0 auto;
+    justify-content: flex-start;
+  }
+
+  .login-branding-footer {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: oklch(1 0 0 / 42%);
+    margin-top: auto;
+  }
+
+  .login-branding-title {
+    font-size: 2.35rem;
+    font-weight: 700;
+    line-height: 1.14;
+    letter-spacing: -0.035em;
+    color: white;
+  }
+
+  @media (min-width: 1280px) {
+    .login-branding-title {
+      font-size: 2.65rem;
+    }
+  }
+
+  .login-branding-accent {
+    /* Same vivid purple in both themes — glows against dark bg */
+    color: oklch(0.72 0.2 290);
+    text-shadow: 0 0 40px oklch(0.6 0.24 292 / 55%);
+  }
+
+  .login-branding-copy {
+    max-width: 100%;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: oklch(1 0 0 / 62%);
+    margin-top: 0.75rem;
+  }
+
+  .login-feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .login-feature-card {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.75rem 0.875rem;
+    border-radius: 0.875rem;
+    border: 1px solid oklch(1 0 0 / 15%);
+    background: linear-gradient(
+      145deg,
+      oklch(1 0 0 / 12%) 0%,
+      oklch(1 0 0 / 4%) 100%
+    );
+    box-shadow: inset 0 1px 0 oklch(1 0 0 / 10%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .dark .login-feature-card {
+    background: linear-gradient(
+      145deg,
+      oklch(1 0 0 / 8%) 0%,
+      oklch(1 0 0 / 2%) 100%
+    );
+  }
+
+  /* Solid opaque purple chip — matches reference exactly */
+  .login-feature-icon {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.625rem;
+    color: white;
+    background: linear-gradient(
+      145deg,
+      oklch(0.50 0.22 290 / 80%) 0%,
+      oklch(0.40 0.22 290 / 60%) 100%
+    );
+    border: 1px solid oklch(0.60 0.22 290 / 80%);
+    box-shadow: inset 0 1px 0 oklch(1 0 0 / 20%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .login-feature-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: white;
+    line-height: 1.3;
+  }
+
+  .login-feature-desc {
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: oklch(1 0 0 / 55%);
+    margin-top: 0.125rem;
+  }
+
+  /*
+   * Right form panel — TRANSPARENT.
+   * Outer shell shows through.
+   */
+  .login-form-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: 2rem 1.75rem;
+    background: transparent;
+  }
+
+  .dark .login-form-panel {
+    background: transparent;
+  }
+
+  @media (min-width: 640px) {
+    .login-form-panel {
+      padding: 2.5rem 2.25rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .login-form-panel {
+      padding: 2.75rem 2.5rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .login-form-panel {
+      padding: 3rem 3.5rem;
+    }
+  }
+
+  .login-form-content {
+    width: 100%;
+    max-width: 22.5rem;
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2rem;
+  }
+
+  .login-mobile-logo {
+    align-self: flex-start;
+    width: auto;
+    max-width: 100%;
+    flex-shrink: 0;
+  }
+
+  .login-form-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    line-height: 1.18;
+    letter-spacing: -0.03em;
+    color: var(--foreground);
+  }
+
+  .login-form-subtitle {
+    font-size: 0.9375rem;
+    color: var(--muted-foreground);
+    margin-top: 0.375rem;
+  }
+
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.125rem;
+  }
+
+  .login-form-label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--foreground);
+    display: block;
+    margin-bottom: 0.375rem;
+  }
+
+  .login-form-field-icon {
+    position: absolute;
+    left: 0.875rem;
+    top: 50%;
+    width: 1rem;
+    height: 1rem;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--muted-foreground);
+  }
+
+  /* Input: clean white box (light) / dark box (dark) with subtle border */
+  .login-form-input {
+    height: 2.875rem !important;
+    padding-left: 2.625rem !important;
+    border-radius: 0.625rem !important;
+    border: 1px solid oklch(0.75 0.02 285 / 55%) !important;
+    background: oklch(1 0 0 / 40%) !important;
+    box-shadow:
+      0 1px 2px oklch(0.4 0.04 285 / 5%),
+      inset 0 0 0 1px oklch(1 0 0 / 50%) !important;
+    color: var(--foreground);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .login-form-input--password {
+    padding-right: 2.875rem !important;
+  }
+
+  .dark .login-form-input {
+    border-color: oklch(1 0 0 / 11%) !important;
+    background: oklch(1 0 0 / 2%) !important;
+    box-shadow:
+      0 1px 3px oklch(0 0 0 / 25%),
+      inset 0 1px 0 oklch(1 0 0 / 5%) !important;
+  }
+
+  .login-form-input:focus-visible {
+    border-color: oklch(0.55 0.22 292 / 55%) !important;
+    box-shadow:
+      0 0 0 3px oklch(0.55 0.22 292 / 14%),
+      0 1px 2px oklch(0.4 0.04 285 / 5%) !important;
+    outline: none !important;
+  }
+
+  .login-form-eye {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0.25rem;
+    border-radius: 0.375rem;
+    color: var(--muted-foreground);
+    transition: color var(--duration-fast) var(--ease-smooth);
+  }
+
+  .login-form-eye:hover {
+    color: var(--foreground);
+  }
+
+  .login-form-eye:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--ring);
+  }
+
+  .login-form-submit {
+    margin-top: 0.35rem;
+    height: 2.85rem;
+    width: 100%;
+    border-radius: 0.75rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    background: linear-gradient(
+      90deg,
+      oklch(0.58 0.24 292),
+      oklch(0.5 0.22 278)
+    ) !important;
+    color: white;
+    box-shadow:
+      0 4px 18px oklch(0.54 0.24 292 / 35%),
+      0 10px 28px oklch(0.5 0.2 285 / 18%),
+      inset 0 1px 0 oklch(1 0 0 / 22%);
+    transition: filter var(--duration-fast) var(--ease-smooth);
+  }
+
+  .login-form-submit:hover {
+    filter: brightness(1.06);
+  }
+
+  .login-form-submit:active {
+    transform: scale(0.99);
+  }
+
+  .dark .login-form-submit {
+    background: linear-gradient(
+      90deg,
+      oklch(0.62 0.24 292),
+      oklch(0.52 0.2 275)
+    ) !important;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .quest-blob-anchor {
       animation: none !important;

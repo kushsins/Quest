@@ -1,7 +1,6 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import express from "express";
-import { Router } from "express";
+import express, { Router } from "express";
 
 import { env } from "./config/env.js";
 import {

@@ -21,7 +21,7 @@ function getRefreshTokenCookieOptions(): CookieOptions {
   };
 }
 
-export function setRefreshTokenCookie(
+function setRefreshTokenCookie(
   response: Response,
   refreshToken: string,
 ): void {
@@ -32,7 +32,7 @@ export function setRefreshTokenCookie(
   );
 }
 
-export function clearRefreshTokenCookie(response: Response): void {
+function clearRefreshTokenCookie(response: Response): void {
   response.clearCookie(REFRESH_TOKEN_COOKIE_NAME, {
     httpOnly: true,
     secure: env.NODE_ENV === "production",

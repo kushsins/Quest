@@ -9,9 +9,9 @@ import {
 } from "react";
 import { useLocation } from "react-router-dom";
 
-export const SIDEBAR_COLLAPSED_KEY = "quest-sidebar-collapsed";
+const SIDEBAR_COLLAPSED_KEY = "quest-sidebar-collapsed";
 
-export type ViewportMode = "mobile" | "tablet" | "desktop";
+type ViewportMode = "mobile" | "tablet" | "desktop";
 
 const DESKTOP_MIN = 1024;
 const TABLET_MIN = 768;

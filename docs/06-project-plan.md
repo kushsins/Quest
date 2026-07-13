@@ -90,7 +90,7 @@ Benefits of this approach include:
 
 # 4. Milestone 2 — Authentication & Authorization
 
-**Status:** Backend complete, Frontend not started
+**Status:** Complete
 
 ## Backend
 

@@ -2,7 +2,7 @@
 
 > Modern Support Ticket Management Platform
 
-Quest is a support ticket management application with a glassmorphism UI, a modular Express API, and PostgreSQL persistence. Milestone 1 (Foundation) is complete. Milestone 2 backend authentication is implemented.
+Quest is a support ticket management application with a glassmorphism UI, a modular Express API, and PostgreSQL persistence. Milestone 1 (Foundation) and Milestone 2 (Authentication) are complete.
 
 ## Tech Stack
 
@@ -15,6 +15,8 @@ Quest is a support ticket management application with a glassmorphism UI, a modu
 - TanStack Query
 - Axios
 - Tailwind CSS
+- React Hook Form
+- Zod
 - shadcn/ui (Radix UI primitives)
 
 ### Backend
@@ -30,7 +32,7 @@ Quest is a support ticket management application with a glassmorphism UI, a modu
 
 ### Infrastructure
 
-- Docker Compose (PostgreSQL)
+- Docker Compose (PostgreSQL, Adminer)
 
 ## Folder Structure
 
@@ -40,7 +42,7 @@ quest/
 │   └── src/
 │       ├── app/            # App shell, providers, router
 │       ├── features/       # Feature modules (health, auth, tickets, ...)
-│       ├── shared/         # Reusable UI, API client, theme, hooks
+│       ├── shared/         # Reusable UI, API client, auth utilities, theme, hooks
 │       └── assets/         # Global styles and static assets
 ├── server/                 # Express API
 │   ├── prisma/             # Schema and migrations
@@ -96,7 +98,7 @@ Never commit `.env` files. Example files contain no secrets.
 
 ## Docker Setup
 
-Start PostgreSQL from the repository root:
+Start PostgreSQL and Adminer from the repository root:
 
 ```bash
 docker compose -f docker/docker-compose.yml up -d
@@ -108,7 +110,23 @@ PostgreSQL runs on port `5433` with:
 - Password: `quest`
 - Database: `quest`
 
-Stop the database:
+### Database UI (Adminer)
+
+Adminer is available at [http://localhost:8081](http://localhost:8081).
+
+Login with:
+
+| Field | Value |
+|-------|-------|
+| System | PostgreSQL |
+| Server | `postgres` |
+| Username | `quest` |
+| Password | `quest` |
+| Database | `quest` |
+
+Use `postgres` as the server hostname (Docker service name), not `localhost`.
+
+Stop the database and Adminer:
 
 ```bash
 docker compose -f docker/docker-compose.yml down
@@ -211,9 +229,42 @@ Expected response:
 }
 ```
 
-The home route (`/`) in the frontend displays the system status integration check.
+The home route (`/`) displays the protected system status integration check. Unauthenticated users are redirected to `/login`.
 
-### Authentication (Backend)
+## Authentication Flow
+
+The frontend uses an in-memory access token and an HttpOnly refresh token cookie managed by the backend.
+
+```text
+Application Start
+        │
+        ▼
+   Initializing
+   (Auth Splash)
+        │
+        ▼
+  Silent Refresh
+  POST /auth/refresh
+        │
+        ├──────────────────────┐
+        ▼                      ▼
+ Authenticated           Unauthenticated
+ (access token + user)    (no session)
+        │                      │
+        ▼                      ▼
+ Protected routes         Login page
+```
+
+**Key behaviors:**
+
+- Access token is stored in memory only (`shared/auth/accessToken.ts`).
+- Refresh token is never accessible to JavaScript.
+- Axios sends `withCredentials: true` on every request.
+- A `401` on protected requests triggers a single queued refresh; concurrent requests wait for the same refresh.
+- If refresh returns `401`, authentication state is cleared and the user is redirected to `/login`.
+- After login, users return to the route they originally requested (for example `/tickets`).
+
+### Authentication (API)
 
 Login returns an access token in the JSON response and sets the refresh token as an HttpOnly cookie. API clients must send credentials (cookies) for refresh requests.
 
@@ -243,4 +294,4 @@ Project documentation lives in `/docs`:
 
 ## Current Status
 
-Milestone 1 (Foundation) is complete. Milestone 2 backend authentication is complete. Frontend authentication is next.
+Milestone 1 (Foundation) and Milestone 2 (Authentication) are complete. Milestone 3 (Ticket Management) is next.

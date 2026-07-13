@@ -1,4 +1,4 @@
-export interface ApiSuccessResponse<T> {
+interface ApiSuccessResponse<T> {
   success: true;
   message: string;
   data: T;
