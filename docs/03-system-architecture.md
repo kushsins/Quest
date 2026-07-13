@@ -235,16 +235,16 @@ Redux is intentionally excluded to reduce unnecessary complexity.
 
 # 10. Authentication
 
-Quest uses JWT-based authentication.
+Quest uses JWT-based authentication with HttpOnly refresh token cookies.
 
 Authentication consists of:
 
-- Access Token
-- Refresh Token
+- **Access Token** — short-lived JWT returned in JSON, stored in frontend memory only, sent via `Authorization: Bearer` header
+- **Refresh Token** — long-lived opaque token stored as an HttpOnly cookie, hashed in the database
 
-The Access Token is included with every authenticated request.
+The Access Token is included with every authenticated request. The backend validates the JWT and verifies the associated session on every protected request. User role and permissions are loaded from the database on each request.
 
-The Refresh Token is stored securely and used to obtain new Access Tokens without requiring users to log in again.
+The Refresh Token is used to obtain new Access Tokens without requiring users to log in again. Refresh requests read the token from the cookie, rotate it, and return only a new access token in the response.
 
 Protected routes require successful authentication before granting access.
 
@@ -310,9 +310,9 @@ Application configuration is managed using environment variables.
 Examples include:
 
 - Database connection
-- JWT secrets
+- JWT secrets (`JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`)
+- Token expiration (`ACCESS_TOKEN_EXPIRES_IN`, `REFRESH_TOKEN_EXPIRES_IN`)
 - API URLs
-- Token expiration
 - Environment mode
 
 Configuration values should never be hardcoded within the application.

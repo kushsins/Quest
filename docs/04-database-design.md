@@ -237,18 +237,23 @@ Quest currently defines the following enumerations.
 
 # 9. Authentication Design
 
-Quest uses a session-based authentication model.
+Quest uses a session-based authentication model with JWT access tokens and HttpOnly refresh token cookies.
 
-Each successful login creates a new session associated with a hashed refresh token.
+Each successful login creates a new session associated with a hashed refresh token. The `sessions` table is the source of truth for active sessions.
+
+Refresh tokens are hashed using `SHA-256(refreshToken + serverPepper)` before storage. Passwords are hashed using bcrypt.
 
 This architecture enables:
 
 - Secure refresh token storage
 - Independent login sessions
-- Token revocation
+- Refresh token rotation
+- Immediate session revocation on logout
 - Future session management
 
-Access Tokens remain stateless and are not stored in the database.
+Access Tokens remain stateless and are not stored in the database. They are stored in frontend memory only and are never persisted in browser storage or cookies.
+
+On every authenticated request, the backend validates the JWT, verifies the session is active, and loads the latest user role and permissions from the database.
 
 ---
 

@@ -2,7 +2,7 @@
 
 > Modern Support Ticket Management Platform
 
-Quest is a support ticket management application with a glassmorphism UI, a modular Express API, and PostgreSQL persistence. Milestone 1 delivers the project foundation: application scaffolding, shared layouts, theme support, and backend health integration.
+Quest is a support ticket management application with a glassmorphism UI, a modular Express API, and PostgreSQL persistence. Milestone 1 (Foundation) is complete. Milestone 2 backend authentication is implemented.
 
 ## Tech Stack
 
@@ -25,6 +25,8 @@ Quest is a support ticket management application with a glassmorphism UI, a modu
 - Prisma ORM
 - PostgreSQL
 - Zod (environment validation)
+- JWT (access tokens)
+- bcrypt (password hashing)
 
 ### Infrastructure
 
@@ -73,6 +75,10 @@ cp server/.env.example server/.env
 | `NODE_ENV` | `development`, `production`, or `test` |
 | `DATABASE_URL` | PostgreSQL connection string |
 | `CORS_ORIGIN` | Allowed frontend origin |
+| `JWT_ACCESS_SECRET` | Secret for signing access tokens (min 32 characters) |
+| `JWT_REFRESH_SECRET` | Server pepper for hashing refresh tokens (min 32 characters) |
+| `ACCESS_TOKEN_EXPIRES_IN` | Access token lifetime (e.g. `15m`) |
+| `REFRESH_TOKEN_EXPIRES_IN` | Refresh token lifetime (e.g. `7d`) |
 
 ### Frontend
 
@@ -115,10 +121,20 @@ cd server
 npm install
 npm run prisma:generate
 npm run prisma:migrate
+npm run prisma:seed
 npm run dev
 ```
 
 The API listens on `http://localhost:3000`.
+
+### Seed Users
+
+After seeding, the following users are available:
+
+| Email | Password | Role |
+|-------|----------|------|
+| `manager@quest.com` | `password123` | Manager |
+| `member@quest.com` | `password123` | Member |
 
 ## Frontend Setup
 
@@ -142,6 +158,7 @@ The app runs on `http://localhost:5173`.
 | `npm run build` | Compile to `dist/` |
 | `npm start` | Run production build |
 | `npm run prisma:migrate` | Apply database migrations |
+| `npm run prisma:seed` | Seed roles, permissions, and users |
 | `npm run prisma:studio` | Open Prisma Studio |
 
 ### Frontend (`client/`)
@@ -196,6 +213,22 @@ Expected response:
 
 The home route (`/`) in the frontend displays the system status integration check.
 
+### Authentication (Backend)
+
+Login returns an access token in the JSON response and sets the refresh token as an HttpOnly cookie. API clients must send credentials (cookies) for refresh requests.
+
+```bash
+curl -c cookies.txt -X POST http://localhost:3000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"manager@quest.com","password":"password123"}'
+```
+
+Use the returned `accessToken` with `Authorization: Bearer <access_token>` for protected endpoints such as `GET /api/v1/auth/me`. Refresh with:
+
+```bash
+curl -b cookies.txt -c cookies.txt -X POST http://localhost:3000/api/v1/auth/refresh
+```
+
 ## Documentation
 
 Project documentation lives in `/docs`:
@@ -210,4 +243,4 @@ Project documentation lives in `/docs`:
 
 ## Current Status
 
-Milestone 1 (Foundation) is complete. Milestone 2 (Authentication & Authorization) is next.
+Milestone 1 (Foundation) is complete. Milestone 2 backend authentication is complete. Frontend authentication is next.

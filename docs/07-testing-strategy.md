@@ -117,13 +117,39 @@ Verified items:
 
 # 5. Manual Test Checklist
 
+## Milestone 2 — Authentication & Authorization (Backend)
+
+Backend authentication was verified manually before frontend implementation. Verified items:
+
+- Login returns access token and user; refresh token is set as HttpOnly cookie
+- Invalid credentials return a user-friendly 401 error
+- `GET /auth/me` requires a valid access token and active session
+- `POST /auth/refresh` reads the refresh token from cookie and returns a new access token
+- Refresh token rotation invalidates the previous refresh token immediately
+- Logout revokes only the current session and clears the refresh token cookie
+- Multiple device sessions remain active when one session is logged out
+- Role and permission middleware enforce authorization by permission key
+
+Seed users for testing:
+
+| Email | Password | Role |
+|-------|----------|------|
+| `manager@quest.com` | `password123` | Manager |
+| `member@quest.com` | `password123` | Member |
+
+---
+
 ## Authentication
 
 - User can log in with valid credentials.
 - Invalid credentials display a user-friendly error.
-- Protected routes require authentication.
-- Access token refresh works correctly.
-- Logout invalidates the current session.
+- Login sets refresh token as HttpOnly cookie (not in JSON response).
+- Access token is returned in JSON and used via Bearer header.
+- Protected routes require authentication and active session validation.
+- Access token refresh works via cookie credentials.
+- Refresh token rotation invalidates the previous token.
+- Logout invalidates the current session and clears the cookie.
+- Other device sessions remain active after single-session logout.
 
 ---
 
