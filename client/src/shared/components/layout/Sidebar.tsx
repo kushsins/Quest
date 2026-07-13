@@ -1,6 +1,13 @@
-import { ChevronLeft, LayoutDashboard, Ticket, X } from "lucide-react";
+import {
+  ChevronLeft,
+  LayoutDashboard,
+  LogOut,
+  Ticket,
+  X,
+} from "lucide-react";
 import { NavLink } from "react-router-dom";
 
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { QuestLogo } from "@/shared/components/layout/QuestLogo";
 import { ThemeToggle } from "@/shared/theme/ThemeToggle";
 import { useSidebar } from "@/shared/hooks/useSidebar";
@@ -11,12 +18,39 @@ const navigation = [
   { to: "/tickets", label: "Tickets", icon: Ticket },
 ] as const;
 
+function getInitials(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+
+  if (parts.length === 0) {
+    return "?";
+  }
+
+  if (parts.length === 1) {
+    const [first] = parts;
+    return (first ?? "?").slice(0, 2).toUpperCase();
+  }
+
+  const [first, second] = parts;
+  const firstInitial = first?.[0] ?? "";
+  const secondInitial = second?.[0] ?? "";
+  return `${firstInitial}${secondInitial}`.toUpperCase() || "?";
+}
+
 export function Sidebar() {
+  const { user, logout } = useAuth();
   const { viewport, isCollapsed, isMobileOpen, toggleCollapsed, closeMobile } =
     useSidebar();
 
   const isMobile = viewport === "mobile";
   const showLabels = isMobile || !isCollapsed;
+  const initials = user ? getInitials(user.name) : "?";
+
+  const handleLogout = () => {
+    void logout();
+    if (isMobile) {
+      closeMobile();
+    }
+  };
 
   const innerContent = (
     <>
@@ -62,7 +96,10 @@ export function Sidebar() {
             }
           >
             <item.icon
-              className={cn("shrink-0", showLabels ? "size-[1.0625rem]" : "size-[1.125rem]")}
+              className={cn(
+                "shrink-0",
+                showLabels ? "size-[1.0625rem]" : "size-[1.125rem]",
+              )}
             />
             {showLabels ? <span>{item.label}</span> : null}
           </NavLink>
@@ -82,19 +119,32 @@ export function Sidebar() {
             )}
           >
             <div className="flex size-[2.125rem] shrink-0 items-center justify-center rounded-full bg-primary/20 text-[0.6875rem] font-semibold text-primary ring-1 ring-primary/25">
-              KS
+              {initials}
             </div>
             {showLabels ? (
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[0.8125rem] font-medium leading-tight text-foreground">
-                  Kushagra Singh
+                  {user?.name}
                 </p>
                 <p className="text-[0.6875rem] leading-tight text-muted-foreground">
-                  Admin
+                  {user?.role.name}
                 </p>
               </div>
             ) : null}
           </div>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            title="Sign out"
+            className={cn(
+              "mt-2 flex w-full items-center rounded-[var(--control-radius)] text-muted-foreground transition-colors hover:bg-[var(--glass-surface-subtle)] hover:text-foreground",
+              showLabels ? "gap-2 px-2 py-1.5 text-xs" : "justify-center p-1.5",
+            )}
+          >
+            <LogOut className="size-3.5 shrink-0" />
+            {showLabels ? <span>Sign out</span> : null}
+          </button>
         </div>
       </div>
     </>

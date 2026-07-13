@@ -1,12 +1,13 @@
+import cookieParser from "cookie-parser";
 import cors from "cors";
-import express from "express";
-import { Router } from "express";
+import express, { Router } from "express";
 
 import { env } from "./config/env.js";
 import {
   errorMiddleware,
   notFoundMiddleware,
 } from "./middleware/error.middleware.js";
+import { authRouter } from "./modules/auth/auth.routes.js";
 import { healthRouter } from "./modules/health/health.routes.js";
 import { logger } from "./shared/utils/logger.js";
 
@@ -20,6 +21,7 @@ export function createApp() {
     }),
   );
   app.use(express.json());
+  app.use(cookieParser());
 
   app.use((request, _response, next) => {
     logger.info(`${request.method} ${request.path}`);
@@ -28,6 +30,7 @@ export function createApp() {
 
   const apiRouter = Router();
   apiRouter.use(healthRouter);
+  apiRouter.use("/auth", authRouter);
 
   app.use("/api/v1", apiRouter);
 

@@ -1,14 +1,14 @@
 export type Theme = "light" | "dark" | "system";
 
-export const THEME_STORAGE_KEY = "quest-theme";
+const THEME_STORAGE_KEY = "quest-theme";
 
-export function getSystemTheme(): "light" | "dark" {
+function getSystemTheme(): "light" | "dark" {
   return window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
     : "light";
 }
 
-export function resolveTheme(theme: Theme): "light" | "dark" {
+function resolveTheme(theme: Theme): "light" | "dark" {
   return theme === "system" ? getSystemTheme() : theme;
 }
 

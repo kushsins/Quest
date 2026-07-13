@@ -1,4 +1,3 @@
-import { Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { cn } from "@/shared/lib/utils";
@@ -7,31 +6,64 @@ interface QuestLogoProps {
   className?: string;
   collapsed?: boolean;
   onNavigate?: () => void;
+  variant?: "default" | "inverse";
+  asLink?: boolean;
 }
 
 export function QuestLogo({
   className,
   collapsed = false,
   onNavigate,
+  variant = "default",
+  asLink = true,
 }: QuestLogoProps) {
-  return (
-    <Link
-      to="/"
-      onClick={onNavigate}
-      className={cn(
-        "group flex items-center gap-2.5 transition-opacity hover:opacity-90",
-        collapsed && "justify-center",
-        className,
-      )}
-    >
-      <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary glow-primary-soft ring-1 ring-primary/20 transition-shadow group-hover:glow-primary">
-        <Sparkles className="size-[1.125rem]" />
+  const content = (
+    <>
+      <span
+        className={cn(
+          "flex shrink-0 items-center justify-center transition-shadow",
+          variant === "inverse"
+            ? "size-9"
+            : "size-9 rounded-xl bg-primary/15 text-primary glow-primary-soft ring-1 ring-primary/20 group-hover:glow-primary",
+        )}
+      >
+        <img
+          src="/favicon.svg"
+          alt=""
+          aria-hidden="true"
+          className={cn(
+            "object-contain",
+            variant === "inverse" ? "size-8" : "size-[1.125rem]",
+          )}
+        />
       </span>
       {!collapsed ? (
-        <span className="text-[1.125rem] font-bold tracking-tight text-foreground">
+        <span
+          className={cn(
+            "text-[1.125rem] font-bold tracking-tight",
+            variant === "inverse" ? "text-white" : "text-foreground",
+          )}
+        >
           Quest
         </span>
       ) : null}
+    </>
+  );
+
+  const rootClassName = cn(
+    "group flex items-center gap-2.5 transition-opacity",
+    asLink && "hover:opacity-90",
+    collapsed && "justify-center",
+    className,
+  );
+
+  if (!asLink) {
+    return <div className={rootClassName}>{content}</div>;
+  }
+
+  return (
+    <Link to="/" onClick={onNavigate} className={rootClassName}>
+      {content}
     </Link>
   );
 }

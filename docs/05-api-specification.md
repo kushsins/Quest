@@ -64,6 +64,8 @@ Quest uses JWT Authentication with Access Tokens and Refresh Tokens.
 
 The Access Token is a short-lived JWT used to authenticate protected API requests.
 
+The frontend stores the access token **in memory only**. It must not be stored in `localStorage`, `sessionStorage`, cookies, or the database.
+
 The frontend must include the token in the Authorization header.
 
 Example
@@ -72,19 +74,42 @@ Example
 Authorization: Bearer <access_token>
 ```
 
-The backend validates the token before processing every protected request.
+The backend validates the token before processing every protected request. On each authenticated request, the backend also verifies that the session referenced by the token still exists, is not revoked, and has not expired. User role and permissions are loaded from the database on every request.
 
 Access Tokens are **not stored** in the database.
+
+The JWT payload is minimal:
+
+```json
+{
+    "sub": "<user_id>",
+    "sid": "<session_id>",
+    "iat": 0,
+    "exp": 0
+}
+```
 
 ---
 
 ## Refresh Token
 
-Refresh Tokens are long-lived and associated with authenticated sessions.
+Refresh Tokens are long-lived opaque tokens associated with authenticated sessions.
 
 Each successful login creates a new session.
 
-The refresh token is securely hashed and stored in the database.
+The refresh token is hashed using `SHA-256(refreshToken + serverPepper)` and stored in the database. Only the hash is persisted.
+
+The refresh token is delivered to the client as an **HttpOnly cookie** named `refreshToken`. It is never returned in JSON responses.
+
+Cookie configuration:
+
+| Attribute | Value |
+|-----------|-------|
+| `HttpOnly` | `true` |
+| `Secure` | `true` in production |
+| `SameSite` | `Lax` |
+| `Path` | `/` |
+| `Max-Age` | `REFRESH_TOKEN_EXPIRES_IN` |
 
 This enables:
 
@@ -92,7 +117,7 @@ This enables:
 - Independent device sessions
 - Refresh Token rotation
 - Single-session logout
-- Logout from all sessions
+- Logout from all sessions (future)
 
 ---
 
@@ -102,8 +127,8 @@ This enables:
 Login
     │
     ▼
-Access Token
-Refresh Token
+Access Token (JSON response)
+Refresh Token (HttpOnly Cookie)
     │
     ▼
 Store Hashed Refresh Token
@@ -117,13 +142,17 @@ Whenever the Access Token expires:
         │
         ▼
 POST /auth/refresh
+(cookie: refreshToken)
         │
         ▼
-New Access Token
+New Access Token (JSON response)
+New Refresh Token (HttpOnly Cookie)
         │
         ▼
 Retry Original Request
 ```
+
+On logout, the current session is revoked and the refresh token cookie is cleared. Other device sessions remain active.
 
 ---
 
@@ -194,6 +223,8 @@ Content-Type: application/json
 
 Authorization: Bearer <access_token>
 ```
+
+Protected refresh requests must include credentials so the browser sends the HttpOnly refresh token cookie.
 
 ---
 
@@ -533,7 +564,6 @@ Not Required
     "message": "Login successful.",
     "data": {
         "accessToken": "<jwt_access_token>",
-        "refreshToken": "<refresh_token>",
         "user": {
             "id": "uuid",
             "name": "John Doe",
@@ -543,6 +573,9 @@ Not Required
                 "name": "Manager"
             },
             "permissions": [
+                "VIEW_DASHBOARD",
+                "VIEW_USERS",
+                "VIEW_TICKETS",
                 "CREATE_TICKET",
                 "UPDATE_TICKET",
                 "DELETE_TICKET",
@@ -554,18 +587,20 @@ Not Required
 }
 ```
 
+The refresh token is set as an HttpOnly cookie (`refreshToken`) and is not included in the response body.
+
 ### Error Responses
 
 | Status | Description |
 |---------|-------------|
-| 400 | Invalid request |
 | 401 | The email or password you entered is incorrect. |
+| 422 | Please correct the highlighted fields. |
 
 ---
 
 ## Refresh Access Token
 
-Issues a new Access Token using a valid Refresh Token.
+Issues a new Access Token using the refresh token from the HttpOnly cookie. The refresh token is rotated on every successful refresh.
 
 ### Endpoint
 
@@ -575,15 +610,11 @@ POST /api/v1/auth/refresh
 
 ### Authentication
 
-Refresh Token Required
+Refresh Token Required (HttpOnly Cookie)
 
 ### Request Body
 
-```json
-{
-    "refreshToken": "<refresh_token>"
-}
-```
+None. The refresh token is read from the `refreshToken` cookie.
 
 ### Success Response
 
@@ -598,11 +629,12 @@ Refresh Token Required
     "success": true,
     "message": "Access token refreshed successfully.",
     "data": {
-        "accessToken": "<new_access_token>",
-        "refreshToken": "<new_refresh_token>"
+        "accessToken": "<new_access_token>"
     }
 }
 ```
+
+A new refresh token is set as an HttpOnly cookie. The previous refresh token becomes invalid immediately.
 
 ### Error Responses
 
@@ -619,6 +651,8 @@ Logs out the current session.
 Only the current session is revoked.
 
 Other active sessions remain logged in.
+
+The refresh token cookie is cleared.
 
 ### Endpoint
 
@@ -688,6 +722,9 @@ Bearer Token
             "name": "Manager"
         },
         "permissions": [
+            "VIEW_DASHBOARD",
+            "VIEW_USERS",
+            "VIEW_TICKETS",
             "CREATE_TICKET",
             "UPDATE_TICKET",
             "DELETE_TICKET",
@@ -1374,7 +1411,12 @@ The following conventions should be followed throughout the backend implementati
 - All timestamps use ISO 8601 format.
 - UUIDs are used for business entities.
 - Access Tokens are never stored in the database.
-- Refresh Tokens are hashed before storage.
+- Access Tokens are stored in frontend memory only.
+- Refresh Tokens are hashed using `SHA-256(refreshToken + serverPepper)` before storage.
+- Refresh Tokens are delivered as HttpOnly cookies and are never returned in JSON responses.
+- Refresh Tokens are rotated on every successful refresh request.
+- Every authenticated request validates the JWT and the associated session state.
+- User permissions are loaded from the database on every authenticated request.
 - Every successful ticket update automatically creates an Activity record.
 - Every new comment automatically creates an Activity record.
 - PATCH endpoints perform partial updates.

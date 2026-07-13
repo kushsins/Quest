@@ -90,7 +90,7 @@ Benefits of this approach include:
 
 # 4. Milestone 2 — Authentication & Authorization
 
-**Status:** Not started
+**Status:** Complete
 
 ## Backend
 
@@ -103,6 +103,8 @@ Benefits of this approach include:
 - Session Management
 - Password Hashing
 - Role-Based Access Control (RBAC)
+- HttpOnly Refresh Token Cookies
+- Database Seed (roles, permissions, users)
 
 ## Frontend
 

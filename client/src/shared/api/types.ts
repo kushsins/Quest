@@ -1,4 +1,4 @@
-export interface FieldError {
+interface FieldError {
   field: string;
   message: string;
 }
@@ -14,8 +14,6 @@ export interface ApiErrorResponse {
   message: string;
   errors: FieldError[];
 }
-
-export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
 
 export class ApiClientError extends Error {
   public readonly statusCode: number;

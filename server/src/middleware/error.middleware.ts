@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import { ZodError } from "zod";
 
 import { ApiError } from "../shared/errors/ApiError.js";
 import { logger } from "../shared/utils/logger.js";
@@ -15,6 +16,18 @@ export function errorMiddleware(
       success: false,
       message: error.message,
       errors: error.errors,
+    });
+    return;
+  }
+
+  if (error instanceof ZodError) {
+    response.status(422).json({
+      success: false,
+      message: "Please correct the highlighted fields.",
+      errors: error.errors.map((issue) => ({
+        field: issue.path.join("."),
+        message: issue.message,
+      })),
     });
     return;
   }
