@@ -137,6 +137,24 @@ Seed users for testing:
 | `manager@quest.com` | `password123` | Manager |
 | `member@quest.com` | `password123` | Member |
 
+Member permissions include all Version 1 capabilities except `DELETE_TICKET`. Both Member and Manager roles include `VIEW_USERS` for the user list endpoint.
+
+---
+
+## Milestone 3 — Ticket Management (Backend)
+
+Backend ticket APIs were verified manually before frontend implementation. Verified items:
+
+- `GET /tickets` supports pagination, search, filtering, sorting, and metadata
+- `GET /tickets/:id` returns ticket details with comments and activities
+- `POST /tickets` creates tickets with reporter/assignee defaults and activity logging
+- `PATCH /tickets/:id` enforces status transitions and logs field changes
+- `DELETE /tickets/:id` removes ticket, comments, and activities in a transaction
+- `GET /tickets/:id/comments` and `POST /tickets/:id/comments` work as documented
+- `GET /users` is available to all authenticated Version 1 roles (Member and Manager)
+- Member cannot delete tickets; Manager has full access
+- Invalid requests return user-friendly validation errors
+
 ---
 
 ## Milestone 2 — Authentication & Authorization (Frontend)

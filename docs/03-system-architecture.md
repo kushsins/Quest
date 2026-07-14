@@ -258,6 +258,8 @@ Although the initial release supports only two system roles, the authorization l
 
 Authorization decisions are based on permissions rather than directly checking role names.
 
+In Version 1, both Member and Manager roles are granted `VIEW_USERS` so authenticated users can retrieve the user list for assignment and display. Restrictive permissions such as `DELETE_TICKET` remain limited to elevated roles. Future administrative endpoints will introduce additional permissions without changing this read access model.
+
 This separation allows future customization of roles while keeping authorization logic consistent.
 
 ---

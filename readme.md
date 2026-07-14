@@ -2,7 +2,7 @@
 
 > Modern Support Ticket Management Platform
 
-Quest is a support ticket management application with a glassmorphism UI, a modular Express API, and PostgreSQL persistence. Milestone 1 (Foundation) and Milestone 2 (Authentication) are complete.
+Quest is a support ticket management application with a glassmorphism UI, a modular Express API, and PostgreSQL persistence. Milestone 1 (Foundation), Milestone 2 (Authentication), and Milestone 3 Phase 1 (Ticket Management Backend) are complete.
 
 ## Tech Stack
 
@@ -176,7 +176,7 @@ The app runs on `http://localhost:5173`.
 | `npm run build` | Compile to `dist/` |
 | `npm start` | Run production build |
 | `npm run prisma:migrate` | Apply database migrations |
-| `npm run prisma:seed` | Seed roles, permissions, and users |
+| `npm run prisma:seed` | Seed roles, permissions, users, and sample tickets |
 | `npm run prisma:studio` | Open Prisma Studio |
 
 ### Frontend (`client/`)
@@ -294,4 +294,17 @@ Project documentation lives in `/docs`:
 
 ## Current Status
 
-Milestone 1 (Foundation) and Milestone 2 (Authentication) are complete. Milestone 3 (Ticket Management) is next.
+Milestone 1 (Foundation), Milestone 2 (Authentication), and Milestone 3 Phase 1 (Ticket Management Backend) are complete. Milestone 3 Phase 2 (Ticket Workspace Frontend) is next.
+
+### Ticket API (authenticated)
+
+| Method | Endpoint |
+|--------|----------|
+| GET | `/api/v1/tickets` |
+| GET | `/api/v1/tickets/:id` |
+| POST | `/api/v1/tickets` |
+| PATCH | `/api/v1/tickets/:id` |
+| DELETE | `/api/v1/tickets/:id` |
+| GET | `/api/v1/tickets/:id/comments` |
+| POST | `/api/v1/tickets/:id/comments` |
+| GET | `/api/v1/users` |

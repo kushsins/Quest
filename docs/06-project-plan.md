@@ -132,6 +132,8 @@ Users can securely authenticate and access protected application routes.
 
 # 5. Milestone 3 — Ticket Management
 
+**Status:** Backend complete (Phase 1). Frontend in progress (Phase 2).
+
 ## Backend
 
 - Ticket CRUD APIs
@@ -141,6 +143,7 @@ Users can securely authenticate and access protected application routes.
 - Search
 - Filtering
 - Sorting
+- User list API (`GET /users`) available to all authenticated Version 1 roles
 
 ## Frontend
 
