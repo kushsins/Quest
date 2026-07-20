@@ -283,14 +283,14 @@ Selecting a ticket opens a resizable side panel without navigating away from the
 The Ticket Panel supports:
 
 - Resize
-- Collapse
+- Close (deselect ticket)
+- Expand to full content area via `view=expanded` query parameter
+- Open in new tab
 - Responsive adaptation
 
-The Ticket Panel contains three primary sections:
+Ticket metadata (title, description, status, priority, assignee, reporter, and timestamps) is displayed above the panel tabs.
 
-## Overview
-
-Displays ticket information and editable properties.
+The Ticket Panel contains two primary tabs:
 
 ## Comments
 
@@ -298,7 +298,7 @@ Displays team discussions related to the ticket.
 
 ## Activity
 
-Displays a chronological timeline of significant ticket events.
+Displays a chronological timeline of significant ticket events. Assignee and reporter changes display user names rather than internal identifiers.
 
 The Ticket Panel remains open while users continue working.
 
@@ -320,6 +320,7 @@ Properties such as:
 - Status
 - Priority
 - Assignee
+- Reporter
 
 are edited using dropdown controls.
 
@@ -335,7 +336,8 @@ The modal should:
 
 - Focus user attention
 - Validate required fields
-- Return users directly to the ticket list after successful creation
+- Use the same glass dropdown controls as the rest of the workspace
+- Select the newly created ticket in the panel after successful creation
 
 ---
 

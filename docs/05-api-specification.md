@@ -589,6 +589,8 @@ Not Required
 
 The refresh token is set as an HttpOnly cookie (`refreshToken`) and is not included in the response body.
 
+Member users receive the same permission set except `DELETE_TICKET`.
+
 ### Error Responses
 
 | Status | Description |
@@ -826,6 +828,8 @@ Bearer Token
 VIEW_USERS
 ```
 
+In Version 1, both Member and Manager roles are granted `VIEW_USERS`. The permission enables authenticated access to the user list for assignment, display, and collaboration features. Future administrative user management endpoints (create, update, delete) will use separate permissions.
+
 ### Success Response
 
 ```json
@@ -891,7 +895,7 @@ VIEW_TICKETS
 |-----------|------|-------------|
 | page | Number | Page number |
 | limit | Number | Number of records per page |
-| search | String | Search by title or description |
+| search | String | Search by ticket number, title, or description |
 | status | Enum | Filter by ticket status |
 | priority | Enum | Filter by priority |
 | assignee | UUID / me | Filter by assignee |
@@ -1055,7 +1059,8 @@ UPDATE_TICKET
     "description": "Updated description",
     "status": "IN_PROGRESS",
     "priority": "MEDIUM",
-    "assigneeId": "uuid"
+    "assigneeId": "uuid",
+    "reporterId": "uuid"
 }
 ```
 
@@ -1222,7 +1227,7 @@ The following permissions are used throughout Version 1 of Quest.
 | Permission | Description |
 |------------|-------------|
 | VIEW_DASHBOARD | View dashboard statistics |
-| VIEW_USERS | View application users |
+| VIEW_USERS | View application users (granted to all Version 1 roles) |
 | VIEW_TICKETS | View tickets |
 | CREATE_TICKET | Create new tickets |
 | UPDATE_TICKET | Update ticket details |

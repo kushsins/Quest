@@ -137,6 +137,49 @@ Seed users for testing:
 | `manager@quest.com` | `password123` | Manager |
 | `member@quest.com` | `password123` | Member |
 
+Member permissions include all Version 1 capabilities except `DELETE_TICKET`. Both Member and Manager roles include `VIEW_USERS` for the user list endpoint.
+
+---
+
+## Milestone 3 — Ticket Management (Backend)
+
+Backend ticket APIs were verified manually before frontend implementation. Verified items:
+
+- `GET /tickets` supports pagination, search, filtering, sorting, and metadata
+- `GET /tickets/:id` returns ticket details with comments and activities
+- `POST /tickets` creates tickets with reporter/assignee defaults and activity logging
+- `PATCH /tickets/:id` enforces status transitions and logs field changes
+- `DELETE /tickets/:id` removes ticket, comments, and activities in a transaction
+- `GET /tickets/:id/comments` and `POST /tickets/:id/comments` work as documented
+- `GET /users` is available to all authenticated Version 1 roles (Member and Manager)
+- Member cannot delete tickets; Manager has full access
+- Invalid requests return user-friendly validation errors
+
+---
+
+## Milestone 3 — Ticket Management (Frontend)
+
+Frontend ticket management is complete. Manual verification checklist:
+
+- `/tickets` renders the workspace with toolbar as primary header (no page header)
+- Issue-list layout displays ticket number, title, status, priority, assignee, reporter, and updated time
+- Quick filters remain visible; advanced filters open in a popover with glass dropdown controls
+- Search debounces and updates results dynamically
+- Sorting updates the list without clearing filters
+- Pagination shows "Showing X–Y of Z" with previous/next controls
+- Selecting a ticket opens the detail panel; URL query params preserve `ticketId`, filters, sort, pagination, and `view`
+- Panel width persists in `localStorage` and respects min/max bounds
+- Panel expand/collapse uses `view=expanded`; open in new tab preserves fullscreen state
+- Tablet panel renders as slide-over; mobile panel renders full-screen
+- Create ticket modal opens from toolbar and via `Ctrl/Cmd + N`
+- Successful creation refreshes the list and selects the new ticket
+- Inline editing works for title, description, status, priority, assignee, and reporter
+- Status dropdown only shows valid workflow transitions
+- Comments can be posted; activity timeline updates and shows user names for assignee/reporter changes
+- Managers can delete tickets from the panel or list row menu with confirmation
+- Empty, loading, skeleton, and error states render for list and panel
+- Filter count badges and quick-filter counts render without clipping
+
 ---
 
 ## Milestone 2 — Authentication & Authorization (Frontend)

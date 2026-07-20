@@ -9,6 +9,8 @@ import {
 } from "./middleware/error.middleware.js";
 import { authRouter } from "./modules/auth/auth.routes.js";
 import { healthRouter } from "./modules/health/health.routes.js";
+import { ticketRouter } from "./modules/tickets/ticket.routes.js";
+import { userRouter } from "./modules/users/user.routes.js";
 import { logger } from "./shared/utils/logger.js";
 
 export function createApp() {
@@ -31,6 +33,8 @@ export function createApp() {
   const apiRouter = Router();
   apiRouter.use(healthRouter);
   apiRouter.use("/auth", authRouter);
+  apiRouter.use("/tickets", ticketRouter);
+  apiRouter.use("/users", userRouter);
 
   app.use("/api/v1", apiRouter);
 

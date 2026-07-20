@@ -80,15 +80,15 @@ export function setupAuthInterceptors(
         | undefined;
 
       if (!originalRequest || error.response?.status !== 401) {
-        return Promise.reject(toError(error));
+        return Promise.reject(error);
       }
 
       if (shouldSkipRefresh(originalRequest.url)) {
-        return Promise.reject(toError(error));
+        return Promise.reject(error);
       }
 
       if (originalRequest._retry) {
-        return Promise.reject(toError(error));
+        return Promise.reject(error);
       }
 
       originalRequest._retry = true;
@@ -98,7 +98,9 @@ export function setupAuthInterceptors(
         originalRequest.headers.Authorization = `Bearer ${token}`;
         return await client(originalRequest);
       } catch (refreshError) {
-        return Promise.reject(toError(refreshError));
+        return Promise.reject(
+          refreshError instanceof Error ? refreshError : error,
+        );
       }
     },
   );

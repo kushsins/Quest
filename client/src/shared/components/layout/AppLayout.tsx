@@ -1,21 +1,41 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 
 import { AmbientBackground } from "@/shared/components/layout/AmbientBackground";
 import { MobileHeader } from "@/shared/components/layout/MobileHeader";
 import { Sidebar } from "@/shared/components/layout/Sidebar";
 import { SidebarBackdrop } from "@/shared/components/layout/SidebarBackdrop";
 import { useSidebar } from "@/shared/hooks/useSidebar";
+import { cn } from "@/shared/lib/utils";
 
 export function AppLayout() {
   const { viewport } = useSidebar();
+  const location = useLocation();
   const isMobile = viewport === "mobile";
+  const isFullHeightWorkspace = location.pathname.startsWith("/tickets");
 
+  const isTicketsRoute = location.pathname.startsWith("/tickets");
   const mainPanel = (
-    <main className="glass-floating min-h-0 min-w-0 flex-1">
-      <div className="glass-floating-scroll p-6 lg:p-8">
+    <main className="glass-floating flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+      <div
+        className={cn(
+          "glass-floating-scroll min-h-0 flex-1",
+          isFullHeightWorkspace
+            ? "flex flex-col overflow-hidden p-0"
+            : "p-6 lg:p-8",
+        )}
+      >
         <Outlet />
       </div>
     </main>
+  );
+
+  const ticketsContent = isMobile ? (
+    <div className="flex min-h-0 min-w-0 flex-1 flex-col layout-gap">
+      <MobileHeader />
+      <Outlet />
+    </div>
+  ) : (
+    <Outlet />
   );
 
   return (
@@ -38,7 +58,9 @@ export function AppLayout() {
         {/* Desktop / tablet sidebar — not rendered on mobile */}
         {viewport !== "mobile" ? <Sidebar /> : null}
 
-        {isMobile ? (
+        {isTicketsRoute ? (
+          ticketsContent
+        ) : isMobile ? (
           <div className="flex min-h-0 min-w-0 flex-1 flex-col layout-gap">
             <MobileHeader />
             {mainPanel}

@@ -157,6 +157,7 @@ const darkField = createBlobField(
 
 const blobDriftStyles = `${lightField.keyframes}\n${darkField.keyframes}`;
 
+/* Blob component kept for when blob maps are re-enabled in AmbientBackground.
 function Blob({
   top,
   left,
@@ -189,6 +190,7 @@ function Blob({
     </div>
   );
 }
+*/
 
 export function AmbientBackground() {
   useLayoutEffect(() => {
@@ -207,15 +209,15 @@ export function AmbientBackground() {
   return (
     <div className="quest-background" aria-hidden="true">
       <div className="quest-blobs quest-blobs--light">
-        {lightField.blobs.map((blob, i) => (
+        {/* {lightField.blobs.map((blob, i) => (
           <Blob key={`l-${String(i)}`} {...blob} />
-        ))}
+        ))} */}
       </div>
 
       <div className="quest-blobs quest-blobs--dark">
-        {darkField.blobs.map((blob, i) => (
+        {/* {darkField.blobs.map((blob, i) => (
           <Blob key={`d-${String(i)}`} {...blob} />
-        ))}
+        ))} */}
       </div>
     </div>
   );
