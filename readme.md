@@ -2,7 +2,7 @@
 
 > Modern Support Ticket Management Platform
 
-Quest is a support ticket management application with a glassmorphism UI, a modular Express API, and PostgreSQL persistence. Milestone 1 (Foundation), Milestone 2 (Authentication), and Milestone 3 (Ticket Management) are complete. Milestone 4 (Dashboard) is next.
+Quest is a support ticket management application with a glassmorphism UI, a modular Express API, and PostgreSQL persistence. Milestone 1 (Foundation), Milestone 2 (Authentication), Milestone 3 (Ticket Management), and Milestone 4 (Dashboard) are complete.
 
 ## Tech Stack
 
@@ -294,7 +294,7 @@ Project documentation lives in `/docs`:
 
 ## Current Status
 
-Milestone 1 (Foundation), Milestone 2 (Authentication), and Milestone 3 (Ticket Management) are complete. Milestone 4 (Dashboard) is next.
+Milestone 1 (Foundation), Milestone 2 (Authentication), Milestone 3 (Ticket Management), and Milestone 4 (Dashboard) are complete.
 
 ### Ticket API (authenticated)
 

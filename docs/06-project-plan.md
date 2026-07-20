@@ -178,25 +178,30 @@ Complete ticket management workflow.
 
 # 6. Milestone 4 — Dashboard
 
+**Status:** Complete
+
 ## Backend
 
-- Dashboard Statistics API
-- Recent Tickets API
-- Dashboard Aggregations
+- Dashboard Statistics API (`GET /api/v1/dashboard`)
+- Dashboard aggregations (status and priority distribution)
+- Recent activity, assigned tickets, and recently updated tickets
 
 ## Frontend
 
-- Dashboard Layout
-- Statistics Cards
-- Recent Tickets
-- Empty States
-- Loading States
+- Dashboard page with composable widgets
+- Statistics cards with contextual subtitles
+- Recent activity feed
+- My assigned and recently updated ticket lists
+- CSS-based status and priority distribution charts
+- Empty states and loading skeletons
+- Default post-login landing page
 
 ## Integration
 
-- Dashboard Data
-- Navigation
-- Live Statistics
+- Dashboard data via single aggregated endpoint
+- Dashboard cache invalidation after ticket mutations
+- Ticket row navigation to ticket workspace
+- Shared ticket presentation components extracted to `client/src/shared`
 
 ## Deliverable
 

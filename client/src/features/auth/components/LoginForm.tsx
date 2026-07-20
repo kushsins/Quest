@@ -50,7 +50,7 @@ export function LoginForm() {
         await login(values);
 
         const state = location.state as LoginLocationState | null;
-        const redirectTo = state?.from?.pathname ?? "/";
+        const redirectTo = state?.from?.pathname ?? "/dashboard";
 
         void navigate(redirectTo, { replace: true });
         toast.success("Welcome back.");

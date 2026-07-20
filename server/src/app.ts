@@ -8,6 +8,7 @@ import {
   notFoundMiddleware,
 } from "./middleware/error.middleware.js";
 import { authRouter } from "./modules/auth/auth.routes.js";
+import { dashboardRouter } from "./modules/dashboard/dashboard.routes.js";
 import { healthRouter } from "./modules/health/health.routes.js";
 import { ticketRouter } from "./modules/tickets/ticket.routes.js";
 import { userRouter } from "./modules/users/user.routes.js";
@@ -33,6 +34,7 @@ export function createApp() {
   const apiRouter = Router();
   apiRouter.use(healthRouter);
   apiRouter.use("/auth", authRouter);
+  apiRouter.use("/dashboard", dashboardRouter);
   apiRouter.use("/tickets", ticketRouter);
   apiRouter.use("/users", userRouter);
 
