@@ -783,7 +783,23 @@ VIEW_DASHBOARD
             "closed": 16,
             "cancelled": 8
         },
-        "recentTickets": []
+        "statusDistribution": {
+            "OPEN": 34,
+            "IN_PROGRESS": 28,
+            "RESOLVED": 42,
+            "CLOSED": 16,
+            "CANCELLED": 8
+        },
+        "priorityDistribution": {
+            "LOW": 24,
+            "MEDIUM": 52,
+            "HIGH": 38,
+            "URGENT": 14
+        },
+        "recentActivity": [],
+        "myAssignedTickets": [],
+        "recentlyUpdatedTickets": [],
+        "referencedUsers": []
     }
 }
 ```

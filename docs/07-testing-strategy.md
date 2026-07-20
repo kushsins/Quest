@@ -217,10 +217,16 @@ Frontend authentication was verified manually after implementation. Verified ite
 
 ## Dashboard
 
-- Statistics display correctly.
-- Recent tickets load successfully.
-- Empty state displays when appropriate.
-- Loading state displays while fetching data.
+- `GET /api/v1/dashboard` returns statistics, distributions, activity, and ticket summaries.
+- Statistics display correctly (total, open, in progress, resolved, closed, cancelled, my assigned).
+- Status and priority distribution charts render with CSS bars.
+- Recent activity shows actor, action, ticket reference, and relative time.
+- My assigned and recently updated ticket lists load successfully.
+- Ticket rows navigate to `/tickets?ticketId=...`.
+- Empty states display when appropriate.
+- Loading skeletons display while fetching data.
+- Dashboard is the default post-login landing page (`/` redirects to `/dashboard`).
+- Dashboard cache refreshes after ticket create, update, delete, and comment mutations.
 
 ---
 

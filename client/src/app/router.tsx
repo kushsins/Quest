@@ -1,8 +1,9 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 
 import { LoginLayout } from "@/features/auth/components/LoginLayout";
 import { LoginPage } from "@/features/auth/components/LoginPage";
 import { AuthProvider } from "@/features/auth/context/AuthProvider";
+import { DashboardPage } from "@/features/dashboard/components/DashboardPage";
 import { HealthStatus } from "@/features/health/components/HealthStatus";
 import { TicketsLayout } from "@/features/tickets/components/TicketsLayout";
 import { AuthGate } from "@/shared/components/auth/AuthGate";
@@ -11,7 +12,6 @@ import { ProtectedRoute } from "@/shared/components/auth/ProtectedRoute";
 import { AppLayout } from "@/shared/components/layout/AppLayout";
 import { SidebarProvider } from "@/shared/hooks/useSidebar";
 import { NotFoundPage } from "@/shared/pages/NotFoundPage";
-import { PlaceholderPage } from "@/shared/pages/PlaceholderPage";
 
 export const router = createBrowserRouter([
   {
@@ -47,16 +47,15 @@ export const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                element: <HealthStatus />,
+                element: <Navigate to="/dashboard" replace />,
               },
               {
                 path: "dashboard",
-                element: (
-                  <PlaceholderPage
-                    title="Dashboard"
-                    description="Overview statistics and recent activity will appear here."
-                  />
-                ),
+                element: <DashboardPage />,
+              },
+              {
+                path: "health",
+                element: <HealthStatus />,
               },
               {
                 path: "tickets",

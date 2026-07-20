@@ -61,6 +61,7 @@ export function useCreateTicket() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ticketQueryKeys.lists() });
       await queryClient.invalidateQueries({ queryKey: ticketQueryKeys.counts() });
+      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     },
   });
 }
@@ -76,6 +77,7 @@ export function useUpdateTicket(ticketId: string) {
       });
       await queryClient.invalidateQueries({ queryKey: ticketQueryKeys.lists() });
       await queryClient.invalidateQueries({ queryKey: ticketQueryKeys.counts() });
+      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     },
   });
 }
@@ -91,6 +93,7 @@ export function useDeleteTicket() {
       });
       await queryClient.invalidateQueries({ queryKey: ticketQueryKeys.lists() });
       await queryClient.invalidateQueries({ queryKey: ticketQueryKeys.counts() });
+      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     },
   });
 }
@@ -104,6 +107,7 @@ export function useAddComment(ticketId: string) {
       await queryClient.invalidateQueries({
         queryKey: ticketQueryKeys.detail(ticketId),
       });
+      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     },
   });
 }
