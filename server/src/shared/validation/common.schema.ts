@@ -12,6 +12,10 @@ export const assigneeIdField = uuidField(
   "Please provide a valid assignee id.",
 ).optional();
 
+export const reporterIdField = uuidField(
+  "Please provide a valid reporter id.",
+).optional();
+
 export const commentMessageField = z
   .string()
   .trim()

@@ -132,7 +132,7 @@ Users can securely authenticate and access protected application routes.
 
 # 5. Milestone 3 — Ticket Management
 
-**Status:** Backend complete (Phase 1). Frontend in progress (Phase 2).
+**Status:** Complete
 
 ## Backend
 
@@ -150,13 +150,15 @@ Users can securely authenticate and access protected application routes.
 - Ticket List
 - Ticket Details Panel
 - Create Ticket Modal
-- Inline Editing
-- Comment Section
 - Search
 - Filters
 - Sorting
 - Empty States
 - Loading States
+- Inline Editing
+- Comment posting
+- Delete ticket (Manager)
+- URL-driven panel state (`ticketId`, `view=expanded`)
 
 ## Integration
 
@@ -164,6 +166,7 @@ Users can securely authenticate and access protected application routes.
 - Ticket Editing
 - Ticket Deletion
 - Ticket Assignment
+- Reporter updates
 - Comments
 - Activity Timeline
 

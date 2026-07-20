@@ -161,8 +161,9 @@ Examples include:
 - Priority
 - Status
 - Assignee
+- Reporter
 
-The panel shall be collapsible to maximize workspace.
+Users may close the panel to return focus to the list, or expand it to fill the tickets content area using the `view=expanded` URL query parameter. Opening a ticket in a new tab uses the same query-driven fullscreen state.
 
 ---
 

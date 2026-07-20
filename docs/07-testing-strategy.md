@@ -157,6 +157,31 @@ Backend ticket APIs were verified manually before frontend implementation. Verif
 
 ---
 
+## Milestone 3 — Ticket Management (Frontend)
+
+Frontend ticket management is complete. Manual verification checklist:
+
+- `/tickets` renders the workspace with toolbar as primary header (no page header)
+- Issue-list layout displays ticket number, title, status, priority, assignee, reporter, and updated time
+- Quick filters remain visible; advanced filters open in a popover with glass dropdown controls
+- Search debounces and updates results dynamically
+- Sorting updates the list without clearing filters
+- Pagination shows "Showing X–Y of Z" with previous/next controls
+- Selecting a ticket opens the detail panel; URL query params preserve `ticketId`, filters, sort, pagination, and `view`
+- Panel width persists in `localStorage` and respects min/max bounds
+- Panel expand/collapse uses `view=expanded`; open in new tab preserves fullscreen state
+- Tablet panel renders as slide-over; mobile panel renders full-screen
+- Create ticket modal opens from toolbar and via `Ctrl/Cmd + N`
+- Successful creation refreshes the list and selects the new ticket
+- Inline editing works for title, description, status, priority, assignee, and reporter
+- Status dropdown only shows valid workflow transitions
+- Comments can be posted; activity timeline updates and shows user names for assignee/reporter changes
+- Managers can delete tickets from the panel or list row menu with confirmation
+- Empty, loading, skeleton, and error states render for list and panel
+- Filter count badges and quick-filter counts render without clipping
+
+---
+
 ## Milestone 2 — Authentication & Authorization (Frontend)
 
 Frontend authentication was verified manually after implementation. Verified items:

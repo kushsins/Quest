@@ -1059,7 +1059,8 @@ UPDATE_TICKET
     "description": "Updated description",
     "status": "IN_PROGRESS",
     "priority": "MEDIUM",
-    "assigneeId": "uuid"
+    "assigneeId": "uuid",
+    "reporterId": "uuid"
 }
 ```
 
