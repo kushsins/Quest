@@ -463,27 +463,37 @@ function TicketPanelContent({
   const apiError = error instanceof ApiClientError ? error : null;
 
   if (isLoading && !ticket) {
-    return <DetailSkeleton />;
+    return (
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <DetailSkeleton />
+      </div>
+    );
   }
 
   if (apiError && !ticket) {
     return (
-      <EmptyState
-        icon={AlertCircle}
-        title="Unable to load ticket"
-        description={apiError.message}
-        action={
-          <Button type="button" variant="outline" onClick={onRetry}>
-            Try again
-          </Button>
-        }
-        className="py-24"
-      />
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <EmptyState
+          icon={AlertCircle}
+          title="Unable to load ticket"
+          description={apiError.message}
+          action={
+            <Button type="button" variant="outline" onClick={onRetry}>
+              Try again
+            </Button>
+          }
+          className="py-24"
+        />
+      </div>
     );
   }
 
   if (!ticket) {
-    return <DetailSkeleton />;
+    return (
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+        <DetailSkeleton />
+      </div>
+    );
   }
 
   return (
@@ -617,8 +627,8 @@ export function TicketPanel({
   const resizeHandler = onResizePointerDown ?? defaultOnResizePointerDown;
 
   const panelBody = (
-    <>
-      <div className="flex items-center justify-between border-b border-[var(--glass-border-subtle)] px-4 py-3">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+      <div className="flex shrink-0 items-center justify-between border-b border-[var(--glass-border-subtle)] px-4 py-3">
         <p className="ticket-panel-header-id">
           #{ticket?.ticketNumber ?? ticketId}
         </p>
@@ -688,17 +698,19 @@ export function TicketPanel({
         isLoadingUsers={isLoadingUsers}
         onRetry={onRetry}
       />
-    </>
+    </div>
   );
 
   if (isOverlay) {
     return (
       <aside
         className={cn(
-          "drawer-transition glass-floating absolute z-20 flex flex-col overflow-hidden",
-          isExpandedLayout
-            ? "inset-0 rounded-[var(--ticket-panel-radius)]"
-            : "inset-y-0 right-0 w-full max-w-lg rounded-l-[var(--ticket-panel-radius)]",
+          "drawer-transition glass-floating z-20 flex h-full min-h-0 flex-col overflow-hidden",
+          isFullScreen
+            ? "fixed inset-0"
+            : isExpandedLayout
+              ? "absolute inset-0 rounded-[var(--ticket-panel-radius)]"
+              : "absolute inset-y-0 right-0 w-full max-w-lg rounded-l-[var(--ticket-panel-radius)]",
         )}
       >
         {panelBody}

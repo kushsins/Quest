@@ -38,6 +38,10 @@ function buildTicketQuery(params: TicketListParams): string {
     searchParams.set("assignee", params.assignee);
   }
 
+  if (params.reporter) {
+    searchParams.set("reporter", params.reporter);
+  }
+
   return searchParams.toString();
 }
 

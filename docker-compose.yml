@@ -1,0 +1,66 @@
+# Full-stack Quest deployment.
+# Run from the repository root:
+#   docker compose up --build
+#
+# This file is self-contained (postgres + backend + frontend).
+# For a database-only development workflow, use docker/docker-compose.yml instead.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: quest-postgres-full
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-quest}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-quest}
+      POSTGRES_DB: ${POSTGRES_DB:-quest}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - quest_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-quest} -d ${POSTGRES_DB:-quest}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: quest-server
+    restart: unless-stopped
+    # Reuse the existing backend env file for secrets (JWT, token lifetimes, etc.).
+    env_file:
+      - ./server/.env
+    # Container-specific overrides. `environment` takes precedence over `env_file`,
+    # so the DB host/CORS point at Docker services instead of localhost.
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: postgresql://${POSTGRES_USER:-quest}:${POSTGRES_PASSWORD:-quest}@postgres:5432/${POSTGRES_DB:-quest}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:8080}
+      SEED_ON_START: ${SEED_ON_START:-false}
+    ports:
+      - "${SERVER_PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        # Baked into the static bundle at build time; the browser calls this URL.
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:3000/api/v1}
+    container_name: quest-client
+    restart: unless-stopped
+    ports:
+      - "${CLIENT_PORT:-8080}:80"
+    depends_on:
+      - server
+
+volumes:
+  quest_postgres_data:

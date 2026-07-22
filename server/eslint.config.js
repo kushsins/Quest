@@ -7,12 +7,12 @@ export default tseslint.config(
   {
     languageOptions: {
       parserOptions: {
-        projectService: true,
+        project: "./tsconfig.test.json",
         tsconfigRootDir: import.meta.dirname,
       },
     },
   },
   {
-    ignores: ["dist/**", "node_modules/**", "prisma/**"],
+    ignores: ["dist/**", "node_modules/**", "prisma/**", "coverage/**"],
   },
 );

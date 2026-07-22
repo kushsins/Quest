@@ -14,6 +14,10 @@ const envSchema = z.object({
   JWT_REFRESH_SECRET: z.string().min(32),
   ACCESS_TOKEN_EXPIRES_IN: z.string().regex(/^\d+[smhd]$/),
   REFRESH_TOKEN_EXPIRES_IN: z.string().regex(/^\d+[smhd]$/),
+  SWAGGER_ENABLED: z
+    .enum(["true", "false"])
+    .default("false")
+    .transform((value) => value === "true"),
 });
 
 type Env = z.infer<typeof envSchema>;

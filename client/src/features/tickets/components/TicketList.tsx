@@ -441,8 +441,13 @@ export function getHasActiveFilters(filters: {
   status?: string;
   priority?: string;
   assignee?: string;
+  reporter?: string;
 }): boolean {
   return Boolean(
-    filters.search || filters.status || filters.priority || filters.assignee,
+    filters.search ||
+      filters.status ||
+      filters.priority ||
+      filters.assignee ||
+      filters.reporter,
   );
 }

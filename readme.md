@@ -32,7 +32,8 @@ Quest is a support ticket management application with a glassmorphism UI, a modu
 
 ### Infrastructure
 
-- Docker Compose (PostgreSQL, Adminer)
+- Docker Compose (full stack: frontend, backend, PostgreSQL)
+- Docker Compose (database-only dev setup: PostgreSQL, Adminer)
 
 ## Folder Structure
 
@@ -96,9 +97,74 @@ cp client/.env.example client/.env
 
 Never commit `.env` files. Example files contain no secrets.
 
-## Docker Setup
+## Run the Full Stack with Docker
 
-Start PostgreSQL and Adminer from the repository root:
+The entire application (frontend, backend, and PostgreSQL) runs with a single command.
+
+### 1. Prepare environment files
+
+```bash
+# Root compose configuration (ports, DB credentials, seeding flag)
+cp .env.docker.example .env
+
+# Backend secrets (JWT, token lifetimes) — reused by the backend container
+cp server/.env.example server/.env
+```
+
+The backend container reads `server/.env` for secrets and overrides `DATABASE_URL`
+and `CORS_ORIGIN` to point at the Docker network. No secrets are hardcoded in the
+Dockerfiles or compose file.
+
+### 2. Start everything
+
+```bash
+docker compose up --build
+```
+
+This builds and starts three services:
+
+| Service | URL | Notes |
+|---------|-----|-------|
+| Frontend | [http://localhost:8080](http://localhost:8080) | Static build served by nginx |
+| Backend API | [http://localhost:3000](http://localhost:3000) | Express + Prisma |
+| PostgreSQL | `localhost:5432` | Persisted in the `quest_postgres_data` volume |
+
+**Startup order** is enforced automatically:
+
+1. `postgres` starts and becomes healthy (`pg_isready`).
+2. `server` waits for the healthy database, then runs `prisma migrate deploy`
+   and starts the API.
+3. `client` (nginx) serves the frontend.
+
+### 3. Seed the database (optional)
+
+Seeding is off by default. Enable it for the initial run by setting `SEED_ON_START=true`
+in `.env`, or run it once on demand:
+
+```bash
+docker compose run --rm -e SEED_ON_START=true server /bin/sh -c "npx prisma db seed"
+```
+
+After seeding, the [seed users](#seed-users) become available.
+
+### 4. Stop the stack
+
+```bash
+docker compose down          # stop containers, keep data
+docker compose down -v       # stop containers and delete the database volume
+```
+
+### Ports and configuration
+
+All host ports and credentials are configurable via the root `.env` file
+(`CLIENT_PORT`, `SERVER_PORT`, `POSTGRES_PORT`, `POSTGRES_USER`, etc.).
+If you change `CLIENT_PORT`, also update `CORS_ORIGIN`, and rebuild the client if
+you change `VITE_API_BASE_URL` (it is baked into the bundle at build time).
+
+## Database-Only Docker Setup (development)
+
+For local development against the source (Vite dev server + `tsx watch`), start
+only PostgreSQL and Adminer from the repository root:
 
 ```bash
 docker compose -f docker/docker-compose.yml up -d
