@@ -53,6 +53,7 @@ export interface TicketListParams {
   status?: import("@/shared/types/ticket.types").TicketStatus;
   priority?: import("@/shared/types/ticket.types").TicketPriority;
   assignee?: string;
+  reporter?: string;
   sortBy: TicketSortField;
   sortOrder: SortOrder;
 }

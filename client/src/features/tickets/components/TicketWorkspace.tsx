@@ -65,6 +65,7 @@ export function TicketWorkspace({
     setQuickFilter,
     setPriority,
     setAssignee,
+    setReporter,
     setSort,
     setPage,
     setPageSize,
@@ -125,10 +126,14 @@ export function TicketWorkspace({
     status: filters.status,
     priority: filters.priority,
     assignee: filters.assignee,
+    reporter: filters.reporter,
   });
 
-  const advancedFilterCount = [filters.priority, filters.assignee].filter(Boolean)
-    .length;
+  const advancedFilterCount = [
+    filters.priority,
+    filters.assignee,
+    filters.reporter,
+  ].filter(Boolean).length;
 
   const activeFilterLabel =
     QUICK_FILTERS.find((filter) => filter.id === activeQuickFilter)?.label ??
@@ -163,11 +168,13 @@ export function TicketWorkspace({
                   <AdvancedFilters
                     priority={filters.priority}
                     assignee={filters.assignee}
+                    reporter={filters.reporter}
                     users={usersQuery.data ?? []}
                     isLoadingUsers={usersQuery.isLoading}
                     advancedFilterCount={advancedFilterCount}
                     onPriorityChange={setPriority}
                     onAssigneeChange={setAssignee}
+                    onReporterChange={setReporter}
                     onClearAdvanced={clearAdvancedFilters}
                   />
                 </PopoverContent>
@@ -284,20 +291,24 @@ export function TicketWorkspace({
 function AdvancedFilters({
   priority,
   assignee,
+  reporter,
   users,
   isLoadingUsers,
   advancedFilterCount,
   onPriorityChange,
   onAssigneeChange,
+  onReporterChange,
   onClearAdvanced,
 }: {
   priority?: TicketPriority;
   assignee?: string;
+  reporter?: string;
   users: UserSummary[];
   isLoadingUsers: boolean;
   advancedFilterCount: number;
   onPriorityChange: (priority: TicketPriority | undefined) => void;
   onAssigneeChange: (assignee: string | undefined) => void;
+  onReporterChange: (reporter: string | undefined) => void;
   onClearAdvanced: () => void;
 }) {
   const priorityOptions = useMemo(
@@ -318,6 +329,19 @@ function AdvancedFilters({
   const assigneeOptions = useMemo(
     () => [
       { value: "", label: "Any assignee" },
+      { value: "me", label: "Me" },
+      ...users.map((user) => ({
+        value: user.id,
+        label: user.name,
+        leading: <UserAvatar user={user} className="size-5 text-[0.5rem]" />,
+      })),
+    ],
+    [users],
+  );
+
+  const reporterOptions = useMemo(
+    () => [
+      { value: "", label: "Any reporter" },
       { value: "me", label: "Me" },
       ...users.map((user) => ({
         value: user.id,
@@ -364,6 +388,25 @@ function AdvancedFilters({
             onAssigneeChange(value || undefined);
           }}
           aria-label="Filter by assignee"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label
+          htmlFor="filter-reporter"
+          className="text-sm font-medium text-foreground"
+        >
+          Reporter
+        </label>
+        <Select
+          id="filter-reporter"
+          value={reporter ?? ""}
+          options={reporterOptions}
+          disabled={isLoadingUsers}
+          onChange={(value) => {
+            onReporterChange(value || undefined);
+          }}
+          aria-label="Filter by reporter"
         />
       </div>
 

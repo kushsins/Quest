@@ -12,6 +12,7 @@ import { dashboardRouter } from "./modules/dashboard/dashboard.routes.js";
 import { healthRouter } from "./modules/health/health.routes.js";
 import { ticketRouter } from "./modules/tickets/ticket.routes.js";
 import { userRouter } from "./modules/users/user.routes.js";
+import { setupSwagger } from "./docs/swagger.js";
 import { logger } from "./shared/utils/logger.js";
 
 export function createApp() {
@@ -39,6 +40,8 @@ export function createApp() {
   apiRouter.use("/users", userRouter);
 
   app.use("/api/v1", apiRouter);
+
+  setupSwagger(app);
 
   app.use(notFoundMiddleware);
   app.use(errorMiddleware);

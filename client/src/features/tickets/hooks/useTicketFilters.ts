@@ -104,6 +104,7 @@ export function useTicketFilters() {
   const filters = useMemo<TicketListParams & { ticketId?: string; view: TicketView }>(() => {
     const search = searchParams.get("search")?.trim() || undefined;
     const assignee = searchParams.get("assignee") || undefined;
+    const reporter = searchParams.get("reporter") || undefined;
 
     return {
       page: parsePage(searchParams.get("page")),
@@ -112,6 +113,7 @@ export function useTicketFilters() {
       status: parseStatus(searchParams.get("status")),
       priority: parsePriority(searchParams.get("priority")),
       assignee,
+      reporter,
       sortBy: parseSortField(searchParams.get("sortBy")),
       sortOrder: parseSortOrder(searchParams.get("sortOrder")),
       ticketId: searchParams.get("ticketId") ?? undefined,
@@ -200,6 +202,16 @@ export function useTicketFilters() {
     [updateParams],
   );
 
+  const setReporter = useCallback(
+    (reporter: string | undefined) => {
+      updateParams({
+        reporter: reporter ?? null,
+        page: "1",
+      });
+    },
+    [updateParams],
+  );
+
   const setSort = useCallback(
     (sortBy: TicketSortField, sortOrder: "asc" | "desc") => {
       updateParams({
@@ -260,6 +272,7 @@ export function useTicketFilters() {
       status: null,
       priority: null,
       assignee: null,
+      reporter: null,
       page: "1",
     });
   }, [updateParams]);
@@ -268,6 +281,7 @@ export function useTicketFilters() {
     updateParams({
       priority: null,
       assignee: null,
+      reporter: null,
       page: "1",
     });
   }, [updateParams]);
@@ -280,6 +294,7 @@ export function useTicketFilters() {
       status: filters.status,
       priority: filters.priority,
       assignee: filters.assignee,
+      reporter: filters.reporter,
       sortBy: filters.sortBy,
       sortOrder: filters.sortOrder,
     }),
@@ -293,6 +308,7 @@ export function useTicketFilters() {
     setQuickFilter,
     setPriority,
     setAssignee,
+    setReporter,
     setSort,
     setPage,
     setPageSize,

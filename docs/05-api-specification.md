@@ -915,6 +915,7 @@ VIEW_TICKETS
 | status | Enum | Filter by ticket status |
 | priority | Enum | Filter by priority |
 | assignee | UUID / me | Filter by assignee |
+| reporter | UUID / me | Filter by reporter |
 | sortBy | String | Sort field |
 | sortOrder | asc / desc | Sort direction |
 

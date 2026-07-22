@@ -116,7 +116,7 @@ export function TicketsLayout() {
   if (!isDesktop) {
     return (
       <>
-        <div className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+        <div className="relative flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
           {isMobile ? (
             <main className="glass-floating flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
               <div className="glass-floating-scroll flex min-h-0 flex-1 flex-col overflow-hidden">

@@ -59,6 +59,12 @@ export const listTicketsQuerySchema = paginationQuerySchema.extend({
       uuidField("Assignee must be a valid user id or 'me'."),
     ])
     .optional(),
+  reporter: z
+    .union([
+      z.literal("me"),
+      uuidField("Reporter must be a valid user id or 'me'."),
+    ])
+    .optional(),
   sortBy: z.enum(TICKET_SORT_FIELDS).default("updatedAt"),
   sortOrder: sortOrderSchema,
 });
