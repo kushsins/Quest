@@ -2,7 +2,29 @@
 
 > Modern Support Ticket Management Platform
 
-Quest is a support ticket management application with a glassmorphism UI, a modular Express API, and PostgreSQL persistence. Milestones 1–4 (Foundation, Authentication, Ticket Management, Dashboard) and stretch goals (tests, Docker, CI, Swagger) are complete. Version 1 is ready for assessment submission.
+Quest is a support ticket management application with a glassmorphism UI, a modular Express API, and PostgreSQL persistence. Milestones 1–4 (Foundation, Authentication, Ticket Management, Dashboard) and stretch goals (tests, Docker, CI, Swagger) are complete.
+
+**Repository:** [github.com/kushsins/Quest](https://github.com/kushsins/Quest)
+
+## Live Demo
+
+| Service | URL |
+|---------|-----|
+| Frontend (Vercel) | [quest-phi-six.vercel.app](https://quest-phi-six.vercel.app/) |
+| Backend API (Render) | [quest-ed8x.onrender.com](https://quest-ed8x.onrender.com/) |
+| Swagger / OpenAPI | [quest-ed8x.onrender.com/api/docs](https://quest-ed8x.onrender.com/api/docs) |
+| Health check | [quest-ed8x.onrender.com/api/v1/health](https://quest-ed8x.onrender.com/api/v1/health) |
+
+Sign in with the [seed users](#seed-users) (`manager@quest.com` / `password123`). On Render’s free tier, the API may sleep; the first request after idle can take up to a minute. Swagger is available when `SWAGGER_ENABLED=true` on the backend.
+
+## Features
+
+- **Authentication** — JWT access tokens (in-memory), HttpOnly refresh cookies, silent session restore, role-based access (Manager / Member)
+- **Ticket management** — Full CRUD, comments, activity timeline, search, filters (status, priority, assignee, reporter), sort, pagination, inline editing, resizable detail panel
+- **Dashboard** — KPI cards, recent activity, assigned and recently updated tickets, status and priority distribution charts
+- **UI** — Glassmorphism design system, light / dark / system themes, responsive sidebar and ticket workspace
+- **API** — Versioned REST API (`/api/v1`), standardized success/error responses, optional Swagger docs
+- **Quality** — Automated tests (Vitest + Supertest + React Testing Library), Docker Compose full stack, GitHub Actions CI
 
 ## Tech Stack
 
@@ -18,10 +40,11 @@ Quest is a support ticket management application with a glassmorphism UI, a modu
 - React Hook Form
 - Zod
 - shadcn/ui (Radix UI primitives)
+- Vitest + React Testing Library
 
 ### Backend
 
-- Node.js
+- Node.js 22
 - Express
 - TypeScript
 - Prisma ORM
@@ -29,11 +52,16 @@ Quest is a support ticket management application with a glassmorphism UI, a modu
 - Zod (environment validation)
 - JWT (access tokens)
 - bcrypt (password hashing)
+- Swagger (OpenAPI via swagger-jsdoc + swagger-ui-express)
+- Vitest + Supertest
 
 ### Infrastructure
 
 - Docker Compose (full stack: frontend, backend, PostgreSQL)
 - Docker Compose (database-only dev setup: PostgreSQL, Adminer)
+- GitHub Actions CI
+- Vercel (frontend hosting)
+- Render (backend API + PostgreSQL)
 
 ## Folder Structure
 
@@ -84,7 +112,7 @@ cp server/.env.example server/.env
 | `JWT_REFRESH_SECRET` | Server pepper for hashing refresh tokens (min 32 characters) |
 | `ACCESS_TOKEN_EXPIRES_IN` | Access token lifetime (e.g. `15m`) |
 | `REFRESH_TOKEN_EXPIRES_IN` | Refresh token lifetime (e.g. `7d`) |
-| `SWAGGER_ENABLED` | Set to `true` to expose OpenAPI docs at `/api/docs` (development) |
+| `SWAGGER_ENABLED` | Set to `true` to expose OpenAPI docs at `/api/docs` (off by default in production) |
 
 ### Frontend
 
@@ -164,46 +192,24 @@ All host ports and credentials are configurable via the root `.env` file
 If you change `CLIENT_PORT`, also update `CORS_ORIGIN`, and rebuild the client if
 you change `VITE_API_BASE_URL` (it is baked into the bundle at build time).
 
-## Database-Only Docker Setup (development)
+## Local Development
 
-For local development against the source (Vite dev server + `tsx watch`), start
-only PostgreSQL and Adminer from the repository root:
+For local work, use `localhost` URLs in `server/.env` and `client/.env` (see [Environment Setup](#environment-setup)). The [Live Demo](#live-demo) links are for the hosted deployment only.
+
+Recommended flow: start PostgreSQL with Docker, then run the API and Vite dev server.
+
+### 1. Database (PostgreSQL)
 
 ```bash
 docker compose -f docker/docker-compose.yml up -d
 ```
 
-PostgreSQL runs on port `5433` with:
+PostgreSQL listens on `localhost:5433` (`quest` / `quest` / database `quest`). Adminer UI: [http://localhost:8081](http://localhost:8081) (server hostname `postgres`).
 
-- User: `quest`
-- Password: `quest`
-- Database: `quest`
-
-### Database UI (Adminer)
-
-Adminer is available at [http://localhost:8081](http://localhost:8081).
-
-Login with:
-
-| Field | Value |
-|-------|-------|
-| System | PostgreSQL |
-| Server | `postgres` |
-| Username | `quest` |
-| Password | `quest` |
-| Database | `quest` |
-
-Use `postgres` as the server hostname (Docker service name), not `localhost`.
-
-Stop the database and Adminer:
+### 2. Backend
 
 ```bash
-docker compose -f docker/docker-compose.yml down
-```
-
-## Backend Setup
-
-```bash
+cp server/.env.example server/.env   # adjust DATABASE_URL, secrets, CORS_ORIGIN
 cd server
 npm install
 npm run prisma:generate
@@ -212,7 +218,29 @@ npm run prisma:seed
 npm run dev
 ```
 
-The API listens on `http://localhost:3000`.
+API: [http://localhost:3000](http://localhost:3000)
+
+**Prisma commands**
+
+| Command | Purpose |
+|---------|---------|
+| `npm run prisma:generate` | Regenerate Prisma Client after schema changes |
+| `npm run prisma:migrate` | Create/apply migrations in development (`prisma migrate dev`) |
+| `npm run prisma:seed` | Seed roles, permissions, users, and sample tickets |
+| `npm run prisma:studio` | Open Prisma Studio |
+
+Production and Docker use `prisma migrate deploy` (see [Docker](#run-the-full-stack-with-docker) and [Deployment](#deployment)).
+
+### 3. Frontend
+
+```bash
+cp client/.env.example client/.env   # VITE_API_BASE_URL=http://localhost:3000/api/v1
+cd client
+npm install
+npm run dev
+```
+
+App: [http://localhost:5173](http://localhost:5173)
 
 ### Seed Users
 
@@ -222,16 +250,6 @@ After seeding, the following users are available:
 |-------|----------|------|------|
 | `manager@quest.com` | `password123` | John Doe | Manager |
 | `member@quest.com` | `password123` | Jane Smith | Member |
-
-## Frontend Setup
-
-```bash
-cd client
-npm install
-npm run dev
-```
-
-The app runs on `http://localhost:5173`.
 
 ## Development Commands
 
@@ -247,10 +265,6 @@ The app runs on `http://localhost:5173`.
 | `npm run prisma:migrate` | Apply database migrations |
 | `npm run prisma:seed` | Seed roles, permissions, users, and sample tickets |
 | `npm run prisma:studio` | Open Prisma Studio |
-| `npm run test` | Run all tests (unit + integration) |
-| `npm run test:unit` | Run unit tests only |
-| `npm run test:integration` | Run integration tests (requires test DB on port `5433`) |
-| `npm run test:coverage` | Run tests with coverage report |
 
 ### Frontend (`client/`)
 
@@ -261,26 +275,91 @@ The app runs on `http://localhost:5173`.
 | `npm run typecheck` | Run TypeScript checks |
 | `npm run build` | Typecheck and build to `dist/` |
 | `npm run preview` | Preview production build |
-| `npm run test` | Run Vitest suite |
-| `npm run test:coverage` | Run tests with coverage report |
 
-## Production Build Commands
+See [Testing](#testing) for `npm run test` commands.
 
-From each application directory:
+## Testing
+
+Automated tests run in CI on every push and pull request. See [`docs/07-testing-strategy.md`](docs/07-testing-strategy.md) for manual checklists.
+
+**Backend** (`server/`) — Vitest + Supertest; 66 tests (50 unit, 16 integration).
 
 ```bash
-# Backend
 cd server
-npm run build
-npm start
-
-# Frontend
-cd client
-npm run build
-npm run preview
+npm run test              # unit + integration
+npm run test:unit         # unit only
+npm run test:integration  # integration (requires PostgreSQL on port 5433)
+npm run test:coverage
 ```
 
-Serve the frontend `dist/` output behind your preferred static host or reverse proxy in production.
+Integration tests use a dedicated `quest_test` database. Copy `server/.env.test.example` to `server/.env.test` if needed. The test runner creates the database and runs migrations automatically when PostgreSQL is available on `localhost:5433`.
+
+**Frontend** (`client/`) — Vitest + React Testing Library; 89 tests.
+
+```bash
+cd client
+npm run test
+npm run test:coverage
+```
+
+**Full verification** (both apps):
+
+```bash
+cd server && npm run lint && npm run typecheck && npm run test && npm run build
+cd ../client && npm run lint && npm run typecheck && npm run test && npm run build
+```
+
+## Deployment
+
+Production is split across Vercel (frontend) and Render (API + PostgreSQL).
+
+### Vercel — Frontend
+
+| Setting | Value |
+|---------|-------|
+| Root directory | `client` |
+| Build command | `npm run build` |
+| Output directory | `dist` |
+| Node.js version | 22 (see `.nvmrc`) |
+
+**Environment variable**
+
+| Variable | Example |
+|----------|---------|
+| `VITE_API_BASE_URL` | `https://your-api.onrender.com/api/v1` |
+
+`vercel.json` rewrites all routes to `index.html` for client-side routing. Rebuild after changing `VITE_API_BASE_URL` (value is baked into the bundle).
+
+### Render — Backend + PostgreSQL
+
+Create a **PostgreSQL** instance and a **Web Service** from the `server/` directory (or the monorepo with root directory `server`).
+
+| Setting | Value |
+|---------|-------|
+| Build command | `npm ci && npx prisma generate && npm run build` |
+| Start command | `npx prisma migrate deploy && npm start` |
+| Node.js version | 22 |
+
+**Environment variables** (set on the web service; link `DATABASE_URL` from the Render PostgreSQL instance):
+
+| Variable | Notes |
+|----------|-------|
+| `DATABASE_URL` | Render PostgreSQL internal URL |
+| `NODE_ENV` | `production` |
+| `CORS_ORIGIN` | Your Vercel frontend URL (exact origin, no trailing slash) |
+| `JWT_ACCESS_SECRET` | Min 32 characters |
+| `JWT_REFRESH_SECRET` | Min 32 characters |
+| `ACCESS_TOKEN_EXPIRES_IN` | e.g. `15m` |
+| `REFRESH_TOKEN_EXPIRES_IN` | e.g. `7d` |
+| `SWAGGER_ENABLED` | `true` to expose `/api/docs` |
+
+After the first deploy, run the seed once (Render shell or one-off job):
+
+```bash
+npx prisma db seed
+```
+
+Both apps must use HTTPS in production so refresh cookies are sent with `Secure` flag.
 
 ## Verification
 
@@ -355,6 +434,23 @@ Use the returned `accessToken` with `Authorization: Bearer <access_token>` for p
 curl -b cookies.txt -c cookies.txt -X POST http://localhost:3000/api/v1/auth/refresh
 ```
 
+## API Overview
+
+Authenticated endpoints use `Authorization: Bearer <access_token>`. Auth refresh uses the HttpOnly cookie (`withCredentials: true`).
+
+| Area | Method | Endpoint |
+|------|--------|----------|
+| Health | GET | `/api/v1/health` |
+| Auth | POST | `/api/v1/auth/login`, `/api/v1/auth/refresh`, `/api/v1/auth/logout` |
+| Auth | GET | `/api/v1/auth/me` |
+| Dashboard | GET | `/api/v1/dashboard` |
+| Tickets | GET, POST | `/api/v1/tickets` |
+| Tickets | GET, PATCH, DELETE | `/api/v1/tickets/:id` |
+| Comments | GET, POST | `/api/v1/tickets/:id/comments` |
+| Users | GET | `/api/v1/users` |
+
+Full contract: [`docs/05-api-specification.md`](docs/05-api-specification.md). Interactive docs: `/api/docs` when `SWAGGER_ENABLED=true`.
+
 ## Documentation
 
 Project documentation lives in `/docs`:
@@ -375,25 +471,3 @@ Deliverables for the JS AI Capability Exercise are in [docs/assessment/](docs/as
 - [Prompt history](docs/assessment/prompt-history.md) — chronological AI-assisted development log
 - [Test results](docs/assessment/test-results.md)
 - [Final AI usage summary](docs/assessment/final-ai-usage-summary.md)
-
-## Current Status
-
-Milestones 1–4 and stretch goals (pagination, sorting, reporter filter, Swagger, automated tests, Docker, CI) are complete. Deferred polish: performance tuning, accessibility, and minor UI refinements.
-
-### Ticket API (authenticated)
-
-| Method | Endpoint |
-|--------|----------|
-| GET | `/api/v1/tickets` |
-| GET | `/api/v1/tickets/:id` |
-| POST | `/api/v1/tickets` |
-| PATCH | `/api/v1/tickets/:id` |
-| DELETE | `/api/v1/tickets/:id` |
-| GET | `/api/v1/tickets/:id/comments` |
-| POST | `/api/v1/tickets/:id/comments` |
-| GET | `/api/v1/users` |
-| GET | `/api/v1/dashboard` |
-
-### API documentation
-
-With `SWAGGER_ENABLED=true` in `server/.env`, interactive OpenAPI docs are available at [http://localhost:3000/api/docs](http://localhost:3000/api/docs).
