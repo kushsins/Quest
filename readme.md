@@ -2,7 +2,7 @@
 
 > Modern Support Ticket Management Platform
 
-Quest is a support ticket management application with a glassmorphism UI, a modular Express API, and PostgreSQL persistence. Milestone 1 (Foundation), Milestone 2 (Authentication), Milestone 3 (Ticket Management), and Milestone 4 (Dashboard) are complete.
+Quest is a support ticket management application with a glassmorphism UI, a modular Express API, and PostgreSQL persistence. Milestones 1–4 (Foundation, Authentication, Ticket Management, Dashboard) and stretch goals (tests, Docker, CI, Swagger) are complete. Version 1 is ready for assessment submission.
 
 ## Tech Stack
 
@@ -39,6 +39,7 @@ Quest is a support ticket management application with a glassmorphism UI, a modu
 
 ```text
 quest/
+├── .github/                # CI workflows
 ├── client/                 # React frontend
 │   └── src/
 │       ├── app/            # App shell, providers, router
@@ -54,11 +55,12 @@ quest/
 │       └── shared/         # API response helpers, errors, logger
 ├── docker/                 # Docker Compose configuration
 └── docs/                   # Product and engineering documentation
+    └── assessment/         # JS AI Capability Exercise submission artifacts
 ```
 
 ## Prerequisites
 
-- Node.js 20+
+- Node.js 22+ (see `.nvmrc`)
 - npm 10+
 - Docker Desktop (or Docker Engine with Compose)
 
@@ -82,6 +84,7 @@ cp server/.env.example server/.env
 | `JWT_REFRESH_SECRET` | Server pepper for hashing refresh tokens (min 32 characters) |
 | `ACCESS_TOKEN_EXPIRES_IN` | Access token lifetime (e.g. `15m`) |
 | `REFRESH_TOKEN_EXPIRES_IN` | Refresh token lifetime (e.g. `7d`) |
+| `SWAGGER_ENABLED` | Set to `true` to expose OpenAPI docs at `/api/docs` (development) |
 
 ### Frontend
 
@@ -244,6 +247,10 @@ The app runs on `http://localhost:5173`.
 | `npm run prisma:migrate` | Apply database migrations |
 | `npm run prisma:seed` | Seed roles, permissions, users, and sample tickets |
 | `npm run prisma:studio` | Open Prisma Studio |
+| `npm run test` | Run all tests (unit + integration) |
+| `npm run test:unit` | Run unit tests only |
+| `npm run test:integration` | Run integration tests (requires test DB on port `5433`) |
+| `npm run test:coverage` | Run tests with coverage report |
 
 ### Frontend (`client/`)
 
@@ -254,6 +261,8 @@ The app runs on `http://localhost:5173`.
 | `npm run typecheck` | Run TypeScript checks |
 | `npm run build` | Typecheck and build to `dist/` |
 | `npm run preview` | Preview production build |
+| `npm run test` | Run Vitest suite |
+| `npm run test:coverage` | Run tests with coverage report |
 
 ## Production Build Commands
 
@@ -295,7 +304,7 @@ Expected response:
 }
 ```
 
-The home route (`/`) displays the protected system status integration check. Unauthenticated users are redirected to `/login`.
+The home route (`/`) redirects authenticated users to `/dashboard`. System health is available at `/health`. Unauthenticated users are redirected to `/login`.
 
 ## Authentication Flow
 
@@ -358,9 +367,18 @@ Project documentation lives in `/docs`:
 - [Project Plan](docs/06-project-plan.md)
 - [Testing Strategy](docs/07-testing-strategy.md)
 
+### Assessment submission
+
+Deliverables for the JS AI Capability Exercise are in [docs/assessment/](docs/assessment/README.md):
+
+- [Candidate info](docs/assessment/candidate-info.md)
+- [Prompt history](docs/assessment/prompt-history.md) — chronological AI-assisted development log
+- [Test results](docs/assessment/test-results.md)
+- [Final AI usage summary](docs/assessment/final-ai-usage-summary.md)
+
 ## Current Status
 
-Milestone 1 (Foundation), Milestone 2 (Authentication), Milestone 3 (Ticket Management), and Milestone 4 (Dashboard) are complete.
+Milestones 1–4 and stretch goals (pagination, sorting, reporter filter, Swagger, automated tests, Docker, CI) are complete. Deferred polish: performance tuning, accessibility, and minor UI refinements.
 
 ### Ticket API (authenticated)
 
@@ -374,3 +392,8 @@ Milestone 1 (Foundation), Milestone 2 (Authentication), Milestone 3 (Ticket Mana
 | GET | `/api/v1/tickets/:id/comments` |
 | POST | `/api/v1/tickets/:id/comments` |
 | GET | `/api/v1/users` |
+| GET | `/api/v1/dashboard` |
+
+### API documentation
+
+With `SWAGGER_ENABLED=true` in `server/.env`, interactive OpenAPI docs are available at [http://localhost:3000/api/docs](http://localhost:3000/api/docs).

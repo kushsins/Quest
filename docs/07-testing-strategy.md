@@ -84,17 +84,17 @@ API testing verifies:
 
 ## Frontend Testing
 
-Frontend functionality is verified through manual interaction.
+Frontend functionality is verified through manual interaction and automated tests.
 
-If time permits, automated component testing may be added using Vitest and React Testing Library.
+Automated tests use Vitest and React Testing Library (`client/tests/`). Run with `npm run test` from `client/`.
 
 ---
 
 ## Backend Testing
 
-Backend functionality is verified through API testing and database validation.
+Backend functionality is verified through API testing, database validation, and automated tests.
 
-If time permits, automated unit and integration tests may be added using Jest.
+Automated tests use Vitest and Supertest (`server/tests/`). Run `npm run test:unit` and `npm run test:integration` from `server/` (integration tests require Docker PostgreSQL on port `5433`).
 
 ---
 
@@ -108,7 +108,7 @@ Verified items:
 - Backend starts and connects to the database
 - `GET /api/v1/health` returns the documented success response
 - Frontend dev server starts and loads the application shell
-- Home route (`/`) displays backend connectivity status
+- Home route (`/`) redirects authenticated users to `/dashboard`; system status is at `/health`
 - Theme switching works for Light, Dark, and System modes
 - Responsive layouts behave correctly on mobile, tablet, and desktop
 - Sidebar collapse state persists across sessions
@@ -319,37 +319,34 @@ Error Response
 
 # 7. Automated Testing
 
-Automated testing is considered a stretch goal for Version 1.
+Automated testing is implemented as a stretch goal and runs in CI.
 
-If project time permits, the following areas should receive automated tests.
+## Frontend (`client/`)
 
-## Frontend
+**Tools:** Vitest, React Testing Library, jsdom
 
-- Component Rendering
-- User Interaction
-- Form Validation
-- Utility Functions
+**Coverage focus:**
 
-Recommended Tools:
+- `useTicketFilters` URL state
+- Ticket constants, validation schemas, query builder
+- Shared utilities (`formatActivity`, `formatDate`, pagination types)
+- Selective components (`ProtectedRoute`, `InlineEditableText`, `TicketQuickFilters`)
 
-- Vitest
-- React Testing Library
+**Commands:** `npm run test`, `npm run test:coverage`
 
 ---
 
-## Backend
+## Backend (`server/`)
 
-- Authentication
-- Services
-- Utility Functions
-- API Integration
+**Tools:** Vitest, Supertest
 
-Recommended Tools:
+**Unit tests:** validation schemas, ticket constants, pagination/duration utilities, authorize and error middleware.
 
-- Jest
-- Supertest
+**Integration tests:** authentication flows, ticket CRUD, RBAC (real `quest_test` database).
 
-Automated tests are intended to complement, not replace, manual verification.
+**Commands:** `npm run test`, `npm run test:unit`, `npm run test:integration`, `npm run test:coverage`
+
+Automated tests complement manual verification; they do not replace the checklists in this document.
 
 ---
 
@@ -373,4 +370,4 @@ Quest prioritizes functional correctness and end-to-end feature validation throu
 
 Each milestone is manually verified before moving to the next, ensuring the application remains stable and fully functional at every stage.
 
-Automated testing is treated as an enhancement for Version 1 and will be implemented where time permits to improve long-term maintainability and reliability.
+Automated testing (Vitest on client and server, Supertest for API integration) is implemented and runs in CI alongside manual checklists in this document.
