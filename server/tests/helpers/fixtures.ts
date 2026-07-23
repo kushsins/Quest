@@ -4,13 +4,13 @@ export const TEST_USERS = {
   manager: {
     email: "manager@quest.com",
     password: "password123",
-    name: "Quest Manager",
+    name: "John Doe",
     role: "Manager",
   },
   member: {
     email: "member@quest.com",
     password: "password123",
-    name: "Quest Member",
+    name: "Jane Smith",
     role: "Member",
   },
 } as const;

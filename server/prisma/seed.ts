@@ -611,13 +611,13 @@ async function main(): Promise<void> {
   await syncRolePermissions(managerRole.id, MANAGER_PERMISSIONS);
 
   await upsertUser(
-    "Quest Manager",
+    "John Doe",
     "manager@quest.com",
     "password123",
     "Manager",
   );
   await upsertUser(
-    "Quest Member",
+    "Jane Smith",
     "member@quest.com",
     "password123",
     "Member",

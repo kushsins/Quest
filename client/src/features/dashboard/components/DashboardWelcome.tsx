@@ -3,23 +3,10 @@ import { Plus, Ticket } from "lucide-react";
 
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { usePermissions } from "@/features/auth/hooks/usePermissions";
+import { useGreeting } from "@/shared/hooks/useGreeting";
 import { formatDisplayDate } from "@/shared/utils/formatDate";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
-
-function getGreeting(): string {
-  const hour = new Date().getHours();
-
-  if (hour < 12) {
-    return "Good morning";
-  }
-
-  if (hour < 17) {
-    return "Good afternoon";
-  }
-
-  return "Good evening";
-}
 
 interface DashboardWelcomeProps {
   className?: string;
@@ -28,6 +15,7 @@ interface DashboardWelcomeProps {
 export function DashboardWelcome({ className }: DashboardWelcomeProps) {
   const { user } = useAuth();
   const { hasPermission } = usePermissions();
+  const greeting = useGreeting();
   const canViewTickets = hasPermission("VIEW_TICKETS");
   const canCreateTicket = hasPermission("CREATE_TICKET");
   const firstName = user?.name.split(" ")[0] ?? "there";
@@ -42,7 +30,7 @@ export function DashboardWelcome({ className }: DashboardWelcomeProps) {
       <div className="space-y-1.5">
         <p className="text-sm text-muted-foreground">{formatDisplayDate()}</p>
         <h1 className="text-page-title text-foreground">
-          {getGreeting()}, {firstName}
+          {greeting}, {firstName}
         </h1>
         <p className="text-page-description">
           Here is a quick overview of your support workload.

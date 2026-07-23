@@ -218,10 +218,10 @@ The API listens on `http://localhost:3000`.
 
 After seeding, the following users are available:
 
-| Email | Password | Role |
-|-------|----------|------|
-| `manager@quest.com` | `password123` | Manager |
-| `member@quest.com` | `password123` | Member |
+| Email | Password | Name | Role |
+|-------|----------|------|------|
+| `manager@quest.com` | `password123` | John Doe | Manager |
+| `member@quest.com` | `password123` | Jane Smith | Member |
 
 ## Frontend Setup
 
