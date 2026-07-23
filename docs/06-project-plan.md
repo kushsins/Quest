@@ -211,31 +211,39 @@ Fully functional dashboard.
 
 # 7. Milestone 5 — Stretch Goals
 
-The following features will only be implemented after all core functionality has been completed.
+The following features were implemented after core milestones 1–4 were complete.
 
 ### Backend
 
-- Pagination
-- Advanced Sorting
-- Performance Optimizations
-- Swagger Documentation
-- API Documentation Improvements
+| Item | Status |
+|------|--------|
+| Pagination | Done |
+| Advanced sorting | Done |
+| Swagger documentation (`SWAGGER_ENABLED=true`, `/api/docs`) | Done |
+| API documentation improvements | Done |
+| Performance optimizations | Deferred |
 
 ### Frontend
 
-- Pagination
-- Advanced Filters
-- UI Polish
-- Accessibility Improvements
-- Performance Optimizations
+| Item | Status |
+|------|--------|
+| Pagination | Done |
+| Advanced filters (including reporter filter) | Done |
+| UI polish | Deferred |
+| Accessibility improvements | Deferred |
+| Performance optimizations | Deferred |
 
 ### Quality
 
-- Frontend Testing
-- Backend Testing (if time permits)
-- Bug Fixes
-- Code Cleanup
-- Documentation Review
+| Item | Status |
+|------|--------|
+| Frontend testing (Vitest + RTL) | Done |
+| Backend testing (Vitest + Supertest) | Done |
+| Docker Compose (full stack) | Done |
+| CI (GitHub Actions) | Done |
+| Bug fixes | Done |
+| Code cleanup | Done |
+| Documentation review | Done |
 
 ## Deliverable
 
