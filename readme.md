@@ -2,7 +2,7 @@
 
 > Modern Support Ticket Management Platform
 
-Quest is a support ticket management application with a glassmorphism UI, a modular Express API, and PostgreSQL persistence. Milestone 1 (Foundation), Milestone 2 (Authentication), Milestone 3 (Ticket Management), and Milestone 4 (Dashboard) are complete.
+Quest is a support ticket management application with a glassmorphism UI, a modular Express API, and PostgreSQL persistence. Milestones 1–4 (Foundation, Authentication, Ticket Management, Dashboard) and stretch goals (tests, Docker, CI, Swagger) are complete. Version 1 is ready for assessment submission.
 
 ## Tech Stack
 
@@ -32,12 +32,14 @@ Quest is a support ticket management application with a glassmorphism UI, a modu
 
 ### Infrastructure
 
-- Docker Compose (PostgreSQL, Adminer)
+- Docker Compose (full stack: frontend, backend, PostgreSQL)
+- Docker Compose (database-only dev setup: PostgreSQL, Adminer)
 
 ## Folder Structure
 
 ```text
 quest/
+├── .github/                # CI workflows
 ├── client/                 # React frontend
 │   └── src/
 │       ├── app/            # App shell, providers, router
@@ -53,11 +55,12 @@ quest/
 │       └── shared/         # API response helpers, errors, logger
 ├── docker/                 # Docker Compose configuration
 └── docs/                   # Product and engineering documentation
+    └── assessment/         # JS AI Capability Exercise submission artifacts
 ```
 
 ## Prerequisites
 
-- Node.js 20+
+- Node.js 22+ (see `.nvmrc`)
 - npm 10+
 - Docker Desktop (or Docker Engine with Compose)
 
@@ -81,6 +84,7 @@ cp server/.env.example server/.env
 | `JWT_REFRESH_SECRET` | Server pepper for hashing refresh tokens (min 32 characters) |
 | `ACCESS_TOKEN_EXPIRES_IN` | Access token lifetime (e.g. `15m`) |
 | `REFRESH_TOKEN_EXPIRES_IN` | Refresh token lifetime (e.g. `7d`) |
+| `SWAGGER_ENABLED` | Set to `true` to expose OpenAPI docs at `/api/docs` (development) |
 
 ### Frontend
 
@@ -96,9 +100,74 @@ cp client/.env.example client/.env
 
 Never commit `.env` files. Example files contain no secrets.
 
-## Docker Setup
+## Run the Full Stack with Docker
 
-Start PostgreSQL and Adminer from the repository root:
+The entire application (frontend, backend, and PostgreSQL) runs with a single command.
+
+### 1. Prepare environment files
+
+```bash
+# Root compose configuration (ports, DB credentials, seeding flag)
+cp .env.docker.example .env
+
+# Backend secrets (JWT, token lifetimes) — reused by the backend container
+cp server/.env.example server/.env
+```
+
+The backend container reads `server/.env` for secrets and overrides `DATABASE_URL`
+and `CORS_ORIGIN` to point at the Docker network. No secrets are hardcoded in the
+Dockerfiles or compose file.
+
+### 2. Start everything
+
+```bash
+docker compose up --build
+```
+
+This builds and starts three services:
+
+| Service | URL | Notes |
+|---------|-----|-------|
+| Frontend | [http://localhost:8080](http://localhost:8080) | Static build served by nginx |
+| Backend API | [http://localhost:3000](http://localhost:3000) | Express + Prisma |
+| PostgreSQL | `localhost:5432` | Persisted in the `quest_postgres_data` volume |
+
+**Startup order** is enforced automatically:
+
+1. `postgres` starts and becomes healthy (`pg_isready`).
+2. `server` waits for the healthy database, then runs `prisma migrate deploy`
+   and starts the API.
+3. `client` (nginx) serves the frontend.
+
+### 3. Seed the database (optional)
+
+Seeding is off by default. Enable it for the initial run by setting `SEED_ON_START=true`
+in `.env`, or run it once on demand:
+
+```bash
+docker compose run --rm -e SEED_ON_START=true server /bin/sh -c "npx prisma db seed"
+```
+
+After seeding, the [seed users](#seed-users) become available.
+
+### 4. Stop the stack
+
+```bash
+docker compose down          # stop containers, keep data
+docker compose down -v       # stop containers and delete the database volume
+```
+
+### Ports and configuration
+
+All host ports and credentials are configurable via the root `.env` file
+(`CLIENT_PORT`, `SERVER_PORT`, `POSTGRES_PORT`, `POSTGRES_USER`, etc.).
+If you change `CLIENT_PORT`, also update `CORS_ORIGIN`, and rebuild the client if
+you change `VITE_API_BASE_URL` (it is baked into the bundle at build time).
+
+## Database-Only Docker Setup (development)
+
+For local development against the source (Vite dev server + `tsx watch`), start
+only PostgreSQL and Adminer from the repository root:
 
 ```bash
 docker compose -f docker/docker-compose.yml up -d
@@ -178,6 +247,10 @@ The app runs on `http://localhost:5173`.
 | `npm run prisma:migrate` | Apply database migrations |
 | `npm run prisma:seed` | Seed roles, permissions, users, and sample tickets |
 | `npm run prisma:studio` | Open Prisma Studio |
+| `npm run test` | Run all tests (unit + integration) |
+| `npm run test:unit` | Run unit tests only |
+| `npm run test:integration` | Run integration tests (requires test DB on port `5433`) |
+| `npm run test:coverage` | Run tests with coverage report |
 
 ### Frontend (`client/`)
 
@@ -188,6 +261,8 @@ The app runs on `http://localhost:5173`.
 | `npm run typecheck` | Run TypeScript checks |
 | `npm run build` | Typecheck and build to `dist/` |
 | `npm run preview` | Preview production build |
+| `npm run test` | Run Vitest suite |
+| `npm run test:coverage` | Run tests with coverage report |
 
 ## Production Build Commands
 
@@ -229,7 +304,7 @@ Expected response:
 }
 ```
 
-The home route (`/`) displays the protected system status integration check. Unauthenticated users are redirected to `/login`.
+The home route (`/`) redirects authenticated users to `/dashboard`. System health is available at `/health`. Unauthenticated users are redirected to `/login`.
 
 ## Authentication Flow
 
@@ -292,9 +367,18 @@ Project documentation lives in `/docs`:
 - [Project Plan](docs/06-project-plan.md)
 - [Testing Strategy](docs/07-testing-strategy.md)
 
+### Assessment submission
+
+Deliverables for the JS AI Capability Exercise are in [docs/assessment/](docs/assessment/README.md):
+
+- [Candidate info](docs/assessment/candidate-info.md)
+- [Prompt history](docs/assessment/prompt-history.md) — chronological AI-assisted development log
+- [Test results](docs/assessment/test-results.md)
+- [Final AI usage summary](docs/assessment/final-ai-usage-summary.md)
+
 ## Current Status
 
-Milestone 1 (Foundation), Milestone 2 (Authentication), Milestone 3 (Ticket Management), and Milestone 4 (Dashboard) are complete.
+Milestones 1–4 and stretch goals (pagination, sorting, reporter filter, Swagger, automated tests, Docker, CI) are complete. Deferred polish: performance tuning, accessibility, and minor UI refinements.
 
 ### Ticket API (authenticated)
 
@@ -308,3 +392,8 @@ Milestone 1 (Foundation), Milestone 2 (Authentication), Milestone 3 (Ticket Mana
 | GET | `/api/v1/tickets/:id/comments` |
 | POST | `/api/v1/tickets/:id/comments` |
 | GET | `/api/v1/users` |
+| GET | `/api/v1/dashboard` |
+
+### API documentation
+
+With `SWAGGER_ENABLED=true` in `server/.env`, interactive OpenAPI docs are available at [http://localhost:3000/api/docs](http://localhost:3000/api/docs).

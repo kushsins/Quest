@@ -133,6 +133,11 @@ function buildTicketWhere(
       query.assignee === "me" ? currentUserId : query.assignee;
   }
 
+  if (query.reporter) {
+    where.reporterId =
+      query.reporter === "me" ? currentUserId : query.reporter;
+  }
+
   if (query.search) {
     where.OR = [
       { ticketNumber: { contains: query.search, mode: "insensitive" } },
